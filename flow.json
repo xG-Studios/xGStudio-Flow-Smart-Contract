@@ -6,7 +6,8 @@
 		}
 	},
 	"contracts": {
-		"HelloWorld":"./contracts/helloWorld.cdc"
+		"xGStudios":"./contracts/xGStudios.cdc",
+		"NonFungibleToken": "./contracts/NonFungibleToken.cdc"
 	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
@@ -17,11 +18,23 @@
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
 			"key": "0e35f6d03099d8abaa1fdc7dc11024dbe934a3c2a1c47d5bab79495ae014fc59"
+		},
+
+		"emulator-account1": {
+			"address": "0xfd43f9148d4b725d",
+			"key":{
+				"type": "hex",
+				"index": 0,
+				"chain": "flow-emulator",
+				"signatureAlgorithm": "ECDSA_secp256k1",
+				"hashAlgorithm": "SHA3_256",
+				"privateKey": "2f3d0633cfc11ebfebdd3f2fdca0c542e831d7fa3367ba1e860b121cef85b8ac"
+			  }
 		}
 	},
 	"deployments": {
 		"emulator": {
-			"emulator-account": ["HelloWorld"] 
+			"emulator-account": ["NonFungibleToken","xGStudios"] 
 		}
 	}
 }
