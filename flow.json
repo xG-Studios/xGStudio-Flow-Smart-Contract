@@ -30,6 +30,18 @@
 				"hashAlgorithm": "SHA3_256",
 				"privateKey": "2f3d0633cfc11ebfebdd3f2fdca0c542e831d7fa3367ba1e860b121cef85b8ac"
 			  }
+		},
+
+		"emulator-account2": {
+			"address": "0xe03daebed8ca0615",
+			"key":{
+				"type": "hex",
+				"index": 0,
+				"chain": "flow-emulator",
+				"signatureAlgorithm": "ECDSA_secp256k1",
+				"hashAlgorithm": "SHA3_256",
+				"privateKey": "99499a0e1243cb8e6fbc736a6acbd5810b7b9f36baf449c7b059cba6ee575a5f"
+			  }
 		}
 	},
 	"deployments": {
@@ -38,3 +50,4 @@
 		}
 	}
 }
+ 
