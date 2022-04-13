@@ -15,7 +15,7 @@ import {
 } from "flow-js-testing";
 import { expect } from "@jest/globals";
 
-jest.setTimeout(10000);
+jest.setTimeout(95000);
 
 beforeAll(async () => {
   const basePath = path.resolve(__dirname, "../..");
@@ -37,6 +37,7 @@ describe("Replicate Playground Accounts", () => {
     const Bob = await getAccountAddress("Bob");
     const Charlie = await getAccountAddress("Charlie");
     const Dave = await getAccountAddress("Dave");
+    const Fahim = await getAccountAddress("Fahim");
 
     console.log(
       "Four Playground accounts were created with following addresses"
@@ -123,8 +124,8 @@ describe("Transactions", () => {
       console.log(e);
     }
     console.log("tx Result", txResult);
-    console.log("trans Good");
-     expect(txResult.errorMessage).toBe(undefined);
+    expect(txResult.errorMessage).toBe(undefined);
+    console.log("transaction succeeded");
   });
 
   test("test transaction createCollection on an Account", async () => {
@@ -156,8 +157,41 @@ describe("Transactions", () => {
       console.log(e);
     }
     console.log("tx Result", txResult);
-    console.log("trans Good");
-     expect(txResult.errorMessage).toBe(undefined);
+    expect(txResult.errorMessage).toBe(undefined);
+    console.log("transaction succeeded");
+  });
+
+  test("test transaction createCollection on an Account", async () => {
+    const name = "createCollection";
+    // Import participating accounts
+    const Fahim = await getAccountAddress("Fahim");
+    // Set transaction signers
+    const signers = [Fahim];
+    // Generate addressMap from import statements
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const xGStudios = await getContractAddress("xGStudios");
+    const addressMap = {
+      NonFungibleToken,
+      xGStudios,
+    };
+
+    let code = await getTransactionCode({
+      name,
+      addressMap,
+    });
+
+    let txResult;
+    try {
+      txResult = await sendTransaction({
+        code,
+        signers,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    console.log("tx Result", txResult);
+    expect(txResult.errorMessage).toBe(undefined);
+    console.log("transaction succeeded");
   });
 
   test("test transaction depositNFT on an Account", async () => {
@@ -165,6 +199,7 @@ describe("Transactions", () => {
     // Import participating accounts
     const Bob = await getAccountAddress("Bob");
     const Dave = await getAccountAddress("Dave");
+   //const Fahim = await getAccountAddress("Fahim");
     // Set transaction signers
     const signers = [Bob];
     // Generate addressMap from import statements
@@ -182,7 +217,8 @@ describe("Transactions", () => {
 
     let txResult;
     try {
-      const args = [Dave];
+     const args = [Dave];
+      //const args = [Fahim];
 
       txResult = await sendTransaction({
         code,
@@ -192,8 +228,9 @@ describe("Transactions", () => {
     } catch (e) {
       console.log(e);
     }
-    console.log("tx result ", txResult);
+    console.log("tx Result", txResult);
     expect(txResult.errorMessage).toBe(undefined);
+   // console.log("noooooooooooooo collection");
     // expect(txResult.errorMessage).toBe("");
   });
 
@@ -229,8 +266,9 @@ describe("Transactions", () => {
     } catch (e) {
       console.log(e);
     }
-    console.log("tx result ", txResult);
+    console.log("tx Result", txResult);
     expect(txResult.errorMessage).toBe(undefined);
+    console.log("transaction succeeded");
     // expect(txResult.errorMessage).toBe("");
   });
 
@@ -238,11 +276,12 @@ describe("Transactions", () => {
     const name = "transferNFT";
     // Import participating accounts
     const Dave = await getAccountAddress("Dave");
-    const Charlie = await getAccountAddress("Charlie");
+    //const Charlie = await getAccountAddress("Charlie");
+    const Fahim = await getAccountAddress("Fahim");
     // Set transaction signers
-    const signers = [Charlie];
+    const signers = [Dave];
 
-    const nftID=1
+    const nftID=0
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
@@ -259,7 +298,7 @@ describe("Transactions", () => {
 
     let txResult;
     try {
-      const args = [Dave,nftID];
+      const args = [Fahim,nftID];
 
       txResult = await sendTransaction({
         code,
@@ -269,8 +308,9 @@ describe("Transactions", () => {
     } catch (e) {
       console.log(e);
     }
-    console.log("tx result ", txResult);
+    console.log("tx Result", txResult);
     expect(txResult.errorMessage).toBe(undefined);
+    console.log("noooooooooooooooooo collection nooooooooooo nft");
     // expect(txResult.errorMessage).toBe("");
   });
 
@@ -296,7 +336,7 @@ describe("Scripts", () => {
       args,
     });
     //expect(result.length > nftcount);
-    console.log("result", result);
+    console.log("result"+" charlie", result);
   });
 
   test("get user NFT", async () => {
@@ -318,12 +358,34 @@ describe("Scripts", () => {
       args,
     });
     //expect(result.length > nftcount);
-    console.log("result", result);
+    console.log("result"+" Dave", result);
+  });
+
+  test("get user NFT", async () => {
+    const name = "getAccountNFT";
+    const Fahim = await getAccountAddress("Fahim");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+
+    const addressMap = {
+      NonFungibleToken,   
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [Fahim];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result"+" Fahim", result);
   });
 
   test("get user NFT Data", async () => {
     const name = "getNFTData";
-    const Dave = await getAccountAddress("Dave");
+    const Fahim = await getAccountAddress("Fahim");
     let nftID = 0;
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
 
@@ -334,7 +396,7 @@ describe("Scripts", () => {
       name,
       addressMap,
     });
-    const args = [Dave,nftID];
+    const args = [Fahim,nftID];
     const result = await executeScript({
       code,
       args,
@@ -344,3 +406,7 @@ describe("Scripts", () => {
   });
 
 });
+
+
+
+
