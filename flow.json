@@ -6,8 +6,8 @@
 		}
 	},
 	"contracts": {
-		"xGStudios":"./contracts/xGStudios.cdc",
-		"NonFungibleToken": "./contracts/NonFungibleToken.cdc"
+		"NonFungibleToken":"./contracts/NonFungibleToken.cdc",
+		"xGStudios":"./contracts/xGStudios.cdc"
 	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
@@ -17,37 +17,20 @@
 	"accounts": {
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
-			"key": "0e35f6d03099d8abaa1fdc7dc11024dbe934a3c2a1c47d5bab79495ae014fc59"
+			"key": "a4e79d33dcb6644e2da4f4eedfb9e5ffbfc82a7106d491061df707537355ef46"
 		},
-
 		"emulator-account1": {
-			"address": "0xfd43f9148d4b725d",
-			"key":{
-				"type": "hex",
-				"index": 0,
-				"chain": "flow-emulator",
-				"signatureAlgorithm": "ECDSA_secp256k1",
-				"hashAlgorithm": "SHA3_256",
-				"privateKey": "2f3d0633cfc11ebfebdd3f2fdca0c542e831d7fa3367ba1e860b121cef85b8ac"
-			  }
+			"address": "0x01cf0e2f2f715450",
+			"key": "acfcd8d1a32e3938388054d4531ee6f25b0bdbeb3620e5c456a9ddb46f23b5ee"
 		},
-
 		"emulator-account2": {
-			"address": "0xe03daebed8ca0615",
-			"key":{
-				"type": "hex",
-				"index": 0,
-				"chain": "flow-emulator",
-				"signatureAlgorithm": "ECDSA_secp256k1",
-				"hashAlgorithm": "SHA3_256",
-				"privateKey": "99499a0e1243cb8e6fbc736a6acbd5810b7b9f36baf449c7b059cba6ee575a5f"
-			  }
+			"address": "0x179b6b1cb6755e31",
+			"key": "617c24db58507a46efe25dbf98b95ab12bcd7423831e1fdb77e7a0c6c3cc5b34"
 		}
 	},
 	"deployments": {
 		"emulator": {
-			"emulator-account": ["NonFungibleToken","xGStudios"] 
+			"emulator-account": ["NonFungibleToken", "xGStudios"] 
 		}
 	}
 }
- 

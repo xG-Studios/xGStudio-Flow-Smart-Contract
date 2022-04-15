@@ -8,6 +8,14 @@ A common order of creating NFT would be
  - Create Collection on another account with `transaction/createCollection`.
  - Deposit an NFTs to accounts having a collection with `transactions/depositNFT` using Contract deployed Account.
  - Transfer NFTs among collection holders with `transaction/transferNFT`.
+
+-------v-2------
+
+A common order of creating NFT would be
+ - Create Admin Account with `transaction/setupAdminAccount`.
+ - Owner then make this account Admin, and gives that account ability to create own Brand, Schema and Template with `transactions/addAdminAccount` 
+ - Create new Brand with `transactions/createBrand` using Admin Account.
+
 You can also see the scripts in `transactions/scripts` to see how information
 can be read from the NFTContract. 
 
@@ -26,6 +34,14 @@ This event is emitted when NFT will be withdrawn.
 `pub event Deposit(id: UInt64, to: Address?)`
 This event is emitted when NFT will be deposited.
 
+- Event for Brand ->
+`pub event BrandCreated(brandId: UInt64, brandName: String, author: Address, data: {String:String})`
+Emitted when a new Brand will be created and added to the smart Contract.
+
+- Event for Brand Updation ->
+`pub event BrandUpdated(brandId: UInt64, brandName: String, author: Address, data: {String:String})` 
+Emitted when a Brand will be update
+
 
 ## NFTContract Addresses
 
@@ -40,6 +56,12 @@ the core functionality of the NFT.
 ## NFTContract Overview Technical
 
 Each NFTContract represent a standard to create an NFT. We inherited NonFungibleToken to conform our standard with the existent NFT standard.
+To Create an NFT, you first have to create a Brand structure which contains following fields:
+- brandId: UInt64 (Id of Brand)
+- brandName: String (Name of Brand)
+- data: {String: String} (Metadata of Brand)
+The transaction will create the brand taking input above mentioned fields. We can update metadata later using Update function(only owner can perform this action).
+
 
 ## Instructions for Creating a Collection 
 

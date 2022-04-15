@@ -95,18 +95,21 @@ describe("Deployment", () => {
 });
 
 describe("Transactions", () => {
-  test("test transaction createCollection on an Account", async () => {
-    const name = "createCollection";
+  test("test transaction setup admin Account", async () => {
+    const name = "setupAdminAccount";
+
     // Import participating accounts
     const Charlie = await getAccountAddress("Charlie");
+
     // Set transaction signers
     const signers = [Charlie];
+
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const xGStudios = await getContractAddress("xGStudios");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      xGStudios,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -124,129 +127,25 @@ describe("Transactions", () => {
       console.log(e);
     }
     console.log("tx Result", txResult);
-    expect(txResult.errorMessage).toBe(undefined);
-    console.log("transaction succeeded");
-  });
 
-  test("test transaction createCollection on an Account", async () => {
-    const name = "createCollection";
-    // Import participating accounts
-    const Dave = await getAccountAddress("Dave");
-    // Set transaction signers
-    const signers = [Dave];
-    // Generate addressMap from import statements
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const xGStudios = await getContractAddress("xGStudios");
-    const addressMap = {
-      NonFungibleToken,
-      xGStudios,
-    };
-
-    let code = await getTransactionCode({
-      name,
-      addressMap,
-    });
-
-    let txResult;
-    try {
-      txResult = await sendTransaction({
-        code,
-        signers,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult);
-    expect(txResult.errorMessage).toBe(undefined);
-    console.log("transaction succeeded");
-  });
-
-  test("test transaction createCollection on an Account", async () => {
-    const name = "createCollection";
-    // Import participating accounts
-    const Fahim = await getAccountAddress("Fahim");
-    // Set transaction signers
-    const signers = [Fahim];
-    // Generate addressMap from import statements
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const xGStudios = await getContractAddress("xGStudios");
-    const addressMap = {
-      NonFungibleToken,
-      xGStudios,
-    };
-
-    let code = await getTransactionCode({
-      name,
-      addressMap,
-    });
-
-    let txResult;
-    try {
-      txResult = await sendTransaction({
-        code,
-        signers,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult);
-    expect(txResult.errorMessage).toBe(undefined);
-    console.log("transaction succeeded");
-  });
-
-  test("test transaction depositNFT on an Account", async () => {
-    const name = "depositNFT";
-    // Import participating accounts
-    const Bob = await getAccountAddress("Bob");
-    const Dave = await getAccountAddress("Dave");
-   //const Fahim = await getAccountAddress("Fahim");
-    // Set transaction signers
-    const signers = [Bob];
-    // Generate addressMap from import statements
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NowWhereContract = await getContractAddress("NowWhereContract");
-    const addressMap = {
-      NonFungibleToken,
-      NowWhereContract,
-    };
-
-    let code = await getTransactionCode({
-      name,
-      addressMap,
-    });
-
-    let txResult;
-    try {
-     const args = [Dave];
-      //const args = [Fahim];
-
-      txResult = await sendTransaction({
-        code,
-        args,
-        signers,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult);
-    expect(txResult.errorMessage).toBe(undefined);
-   // console.log("noooooooooooooo collection");
     // expect(txResult.errorMessage).toBe("");
   });
+  test("test transaction add admin Account", async () => {
+    const name = "addAdminAccount";
 
-  test("test transaction depositNFT on an Account", async () => {
-    const name = "depositNFT";
     // Import participating accounts
     const Bob = await getAccountAddress("Bob");
     const Charlie = await getAccountAddress("Charlie");
+
     // Set transaction signers
     const signers = [Bob];
+
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NowWhereContract = await getContractAddress("NowWhereContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      NowWhereContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
@@ -266,137 +165,66 @@ describe("Transactions", () => {
     } catch (e) {
       console.log(e);
     }
-    console.log("tx Result", txResult);
-    expect(txResult.errorMessage).toBe(undefined);
-    console.log("transaction succeeded");
+    console.log("tx result ", txResult);
+
     // expect(txResult.errorMessage).toBe("");
   });
+  test("test transaction  create brand", async () => {
+    const name = "createBrand";
 
-  test("test transaction transferNFT to an Account", async () => {
-    const name = "transferNFT";
     // Import participating accounts
-    const Dave = await getAccountAddress("Dave");
-    //const Charlie = await getAccountAddress("Charlie");
-    const Fahim = await getAccountAddress("Fahim");
-    // Set transaction signers
-    const signers = [Dave];
+    const Charlie = await getAccountAddress("Charlie");
 
-    const nftID=0
+    // Set transaction signers
+    const signers = [Charlie];
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const NowWhereContract = await getContractAddress("NowWhereContract");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
     const addressMap = {
       NonFungibleToken,
-      NowWhereContract,
+      TroonAtomicStandard,
     };
 
     let code = await getTransactionCode({
       name,
       addressMap,
     });
+    const args = ["Samsung", { "mob": "note6" }];
 
     let txResult;
     try {
-      const args = [Fahim,nftID];
-
       txResult = await sendTransaction({
         code,
-        args,
         signers,
+        args,
       });
     } catch (e) {
       console.log(e);
     }
     console.log("tx Result", txResult);
-    expect(txResult.errorMessage).toBe(undefined);
-    console.log("noooooooooooooooooo collection nooooooooooo nft");
+
     // expect(txResult.errorMessage).toBe("");
   });
-
 });
 
 describe("Scripts", () => {
-  test("get user NFT", async () => {
-    const name = "getAccountNFT";
-    const Charlie = await getAccountAddress("Charlie");
+  test("get all of the Brands", async () => {
+    const name = "getAllBrands";
+    const Bob = await getAccountAddress("Bob");
     let nftcount = 0;
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
 
     const addressMap = {
-      NonFungibleToken,   
+      NonFungibleToken,
+      NFTWhiteLabelContract,
     };
     let code = await getScriptCode({
       name,
       addressMap,
     });
-    const args = [Charlie];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    //expect(result.length > nftcount);
-    console.log("result"+" charlie", result);
-  });
-
-  test("get user NFT", async () => {
-    const name = "getAccountNFT";
-    const Dave = await getAccountAddress("Dave");
-    let nftcount = 0;
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-
-    const addressMap = {
-      NonFungibleToken,   
-    };
-    let code = await getScriptCode({
-      name,
-      addressMap,
-    });
-    const args = [Dave];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    //expect(result.length > nftcount);
-    console.log("result"+" Dave", result);
-  });
-
-  test("get user NFT", async () => {
-    const name = "getAccountNFT";
-    const Fahim = await getAccountAddress("Fahim");
-    let nftcount = 0;
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-
-    const addressMap = {
-      NonFungibleToken,   
-    };
-    let code = await getScriptCode({
-      name,
-      addressMap,
-    });
-    const args = [Fahim];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    //expect(result.length > nftcount);
-    console.log("result"+" Fahim", result);
-  });
-
-  test("get user NFT Data", async () => {
-    const name = "getNFTData";
-    const Fahim = await getAccountAddress("Fahim");
-    let nftID = 0;
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-
-    const addressMap = {
-      NonFungibleToken,   
-    };
-    let code = await getScriptCode({
-      name,
-      addressMap,
-    });
-    const args = [Fahim,nftID];
+    const args = [];
     const result = await executeScript({
       code,
       args,
@@ -405,8 +233,30 @@ describe("Scripts", () => {
     console.log("result", result);
   });
 
+  test("get all of the Brands", async () => {
+    const name = "getBrandById";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [1];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+  
 });
 
-
-
-
+ 
