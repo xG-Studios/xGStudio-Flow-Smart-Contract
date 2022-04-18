@@ -21,7 +21,7 @@
 		},
 		"emulator-account1": {
 			"address": "0x01cf0e2f2f715450",
-			"key": "acfcd8d1a32e3938388054d4531ee6f25b0bdbeb3620e5c456a9ddb46f23b5ee"
+			"key": "e9f6817bdf4280faaa0770f946b17438e45cb52db9c852e9647821464c3ee76c"
 		},
 		"emulator-account2": {
 			"address": "0x179b6b1cb6755e31",
@@ -34,3 +34,4 @@
 		}
 	}
 }
+ 

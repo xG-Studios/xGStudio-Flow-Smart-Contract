@@ -206,6 +206,120 @@ describe("Transactions", () => {
 
     // expect(txResult.errorMessage).toBe("");
   });
+
+  test("test transaction  create brand", async () => {
+    const name = "createSchema";
+
+    // Import participating accounts
+    const Charlie = await getAccountAddress("Charlie");
+
+    // Set transaction signers
+    const signers = [Charlie];
+
+    // Generate addressMap from import statements
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
+    const addressMap = {
+      NonFungibleToken,
+      TroonAtomicStandard,
+    };
+
+    let code = await getTransactionCode({
+      name,
+      addressMap,
+    });
+    const args = ["Nepal"];
+
+    let txResult;
+    try {
+      txResult = await sendTransaction({
+        code,
+        signers,
+        args,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    console.log("tx Result", txResult);
+
+    // expect(txResult.errorMessage).toBe("");
+  });
+
+  test("test transaction  create brand", async () => {
+    const name = "createTemplateStaticData";
+
+    // Import participating accounts
+    const Charlie = await getAccountAddress("Charlie");
+
+    // Set transaction signers
+    const signers = [Charlie];
+
+    // Generate addressMap from import statements
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
+    const addressMap = {
+      NonFungibleToken,
+      TroonAtomicStandard,
+    };
+
+    let code = await getTransactionCode({
+      name,
+      addressMap,
+    });
+    const args = [1,1,460];
+
+    let txResult;
+    try {
+      txResult = await sendTransaction({
+        code,
+        signers,
+        args,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    console.log("tx Result", txResult);
+
+    // expect(txResult.errorMessage).toBe("");
+  });
+
+  test("test transaction  create brand", async () => {
+    const name = "createTemplateStaticData";
+
+    // Import participating accounts
+    const Charlie = await getAccountAddress("Charlie");
+
+    // Set transaction signers
+    const signers = [Charlie];
+
+    // Generate addressMap from import statements
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
+    const addressMap = {
+      NonFungibleToken,
+      TroonAtomicStandard,
+    };
+
+    let code = await getTransactionCode({
+      name,
+      addressMap,
+    });
+    const args = [1,1,500];
+
+    let txResult;
+    try {
+      txResult = await sendTransaction({
+        code,
+        signers,
+        args,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    console.log("tx Result", txResult);
+
+    // expect(txResult.errorMessage).toBe("");
+  });
 });
 
 describe("Scripts", () => {
@@ -256,7 +370,338 @@ describe("Scripts", () => {
     //expect(result.length > nftcount);
     console.log("result", result);
   });
+
+  test("get all of the Brands", async () => {
+    const name = "getBrandCount";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getBrandName";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [1];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getallSchema";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getSchemaById";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [1];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getSchemaCount";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getAllTemplates";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getTemplateById";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [1];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getTemplateCount";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
   
 });
 
+
+describe("Transactions", () => {
+  test("test transaction  create brand", async () => {
+    const name = "removeTemplate";
+
+    // Import participating accounts
+    const Charlie = await getAccountAddress("Charlie");
+
+    // Set transaction signers
+    const signers = [Charlie];
+
+    // Generate addressMap from import statements
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const TroonAtomicStandard = await getContractAddress("TroonAtomicStandard");
+    const addressMap = {
+      NonFungibleToken,
+      TroonAtomicStandard,
+    };
+
+    let code = await getTransactionCode({
+      name,
+      addressMap,
+    });
+    const args = [1];
+
+    let txResult;
+    try {
+      txResult = await sendTransaction({
+        code,
+        signers,
+        args,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    console.log("tx Result", txResult);
+
+    // expect(txResult.errorMessage).toBe("");
+  });
+
+});
+ 
+describe("Scripts", () => {
+  test("get all of the Brands", async () => {
+    const name = "getAllTemplates";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getTemplateById";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [2];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getTemplateById";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [2];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+
+  test("get all of the Brands", async () => {
+    const name = "getTemplateCount";
+    const Bob = await getAccountAddress("Bob");
+    let nftcount = 0;
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const NFTWhiteLabelContract = await getContractAddress("NFTWhiteLabelContract");
+
+    const addressMap = {
+      NonFungibleToken,
+      NFTWhiteLabelContract,
+    };
+    let code = await getScriptCode({
+      name,
+      addressMap,
+    });
+    const args = [];
+    const result = await executeScript({
+      code,
+      args,
+    });
+    //expect(result.length > nftcount);
+    console.log("result", result);
+  });
+});
  
