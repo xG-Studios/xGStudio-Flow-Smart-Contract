@@ -1,23 +1,35 @@
 import xGStudios from 0xf8d6e0586b0a20c7
 import NonFungibleToken from 0xf8d6e0586b0a20c7
 
-//the person we're giving an NFT to:
-transaction(recipient: Address, id:UInt64) {
+// This transaction transfers a template to a recipient
+// This transaction is how a  user would transfer an NFT
+// from their account to another account
+// The recipient must have a TroonAtomicStandard Collection object stored
+// and a public TransferInterface capability stored at
+// `/public/TemplateCollection`
 
-//the giver of an NFT
-  prepare(acct: AuthAccount) {
+// Parameters:
+//
+// recipient: The Flow address of the account to receive the NFT.
+// withdrawID: The id of the NFT to be transferred
 
-    let collection = acct.borrow<&xGStudios.Collection>(from:/storage/Collection)! 
-   
-    let publicReference = getAccount(recipient).getCapability(/public/collection)
-                        .borrow<&xGStudios.Collection{NonFungibleToken.CollectionPublic}>()
-                        ??panic("This account doesn't have a collection")
+transaction(recipient:Address, withdrawID:UInt64) {
+    // local variable for storing the transferred token
+    let transferToken: @NonFungibleToken.NFT
+    
+    prepare(acct: AuthAccount) {
+        let collectionRef =  acct.borrow<&xGStudios.Collection>(from: xGStudios.CollectionStoragePath)
+        ??panic("could not borrow a reference to the the stored nft Collection")
+        self.transferToken <- collectionRef.withdraw(withdrawID: withdrawID)
+    }
 
-    publicReference.deposit(token: <- collection.withdraw(withdrawID:id))
-
-  }
-
-  execute {
-    log("Transfered an NFT into Collection")
-  }
+    execute {
+        // get the recipient's public account object
+        let recipient = getAccount(recipient)
+        let receiverRef = recipient.getCapability<&{xGStudios.xGStudiosCollectionPublic}>(xGStudios.CollectionPublicPath)
+            .borrow()
+            ?? panic("Could not borrow receiver reference")
+        // deposit the NFT in the receivers collection
+        receiverRef.deposit(token: <-self.transferToken)
+    }
 }

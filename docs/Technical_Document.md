@@ -4,21 +4,16 @@
 ## Instructions for creating Collection, Depositing NFT, Transfereing NFTs between Users
 
 A common order of creating NFT would be
- - Create Collection on account with `transaction/createCollection`.
- - Create Collection on another account with `transaction/createCollection`.
- - Deposit an NFTs to accounts having a collection with `transactions/depositNFT` using Contract deployed Account.
- - Transfer NFTs among collection holders with `transaction/transferNFT`.
-
--------v-2------
-
-A common order of creating NFT would be
  - Create Admin Account with `transaction/setupAdminAccount`.
  - Owner then make this account Admin, and gives that account ability to create own Brand, Schema and Template with `transactions/addAdminAccount` 
  - Create new Brand with `transactions/createBrand` using Admin Account.
-
+ - Create new Schema with `transactions/createSchema` using Admin Account.
+ - Create new Template with `transactions/createTemplate` using Admin Account.
+ - Remove the Template with `transactions/removeTemplate` using Admin Account.
+ - Create NFT Receiver with `transaction/setupAccount` .
+ - Create Mint of Templates and transfer to Address(having Setup Account enabled) with `transaction/mintNFT`
 You can also see the scripts in `transactions/scripts` to see how information
 can be read from the NFTContract. 
-
 
 ### NFTContract Events
 
@@ -38,9 +33,25 @@ This event is emitted when NFT will be deposited.
 `pub event BrandCreated(brandId: UInt64, brandName: String, author: Address, data: {String:String})`
 Emitted when a new Brand will be created and added to the smart Contract.
 
-- Event for Brand Updation ->
+- Event for Brand Update ->
 `pub event BrandUpdated(brandId: UInt64, brandName: String, author: Address, data: {String:String})` 
 Emitted when a Brand will be update
+
+- Event for Schema ->
+`pub event SchemaCreated(schemaId: UInt64, schemaName: String, author: Address)`
+Emitted when a new Schema will be created
+
+- Event for Template ->
+`pub event TemplateCreated(templateId: UInt64, brandId: UInt64, schemaId: UInt64, maxSupply: UInt64)`
+Emitted when a new Template will be created
+
+-  Event for Template Mint ->
+`pub event NFTMinted(nftId: UInt64, templateId: UInt64, mintNumber: UInt64)`
+Emitted when a Template will be Minted and save as NFT
+
+-  Event for Template removed ->
+`pub event TemplateRemoved(templateId: UInt64)`
+Emitted when a Template will be removed
 
 
 ## NFTContract Addresses
@@ -62,6 +73,20 @@ To Create an NFT, you first have to create a Brand structure which contains foll
 - data: {String: String} (Metadata of Brand)
 The transaction will create the brand taking input above mentioned fields. We can update metadata later using Update function(only owner can perform this action).
 
+We also have to Create Schema Structure before creating a template using the following fields:
+- schameName: String (Name of Schema)
+- format: {String: SchemaType} 
+The transaction will create the schema taking input above mentioned fields. This schema is like a database structure which is already given and if you want to create a template using that schema. You have to follow schema Structure.
+
+We will then create Template using brandId and schemaId that we created before. Without brandId and schemaId we can't create template. We can create Template using following fields:
+- brandId: UInt64 (Foreign Id of Brand)
+- schemaId: UInt64 (Foreign Id of Schema)
+- maxSupply: UInt64 (maximum NFTs that could be created using that template)
+- immutableData: {String: AnyStruct} (Immutable metadata of template)
+
+We then have our Resource type NFT(actual asset) that represents a template owns by a user. It stores its unique Id and NFTData structure contains TemplateId and mintNumber of Template. 
+
+The above transaction can only be performed by an Admin having an Admin resource that will give special capability to any user to create Brands, Schema and Template.
 
 ## Instructions for Creating a Collection 
 

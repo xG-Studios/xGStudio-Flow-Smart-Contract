@@ -1,4 +1,4 @@
-import NonFungibleToken from 0xf8d6e0586b0a20c7
+import NonFungibleToken from 0x91d21b0c6bbecfae //tesnet address
 pub contract xGStudios:NonFungibleToken{
 
    // Events
@@ -38,13 +38,23 @@ pub contract xGStudios:NonFungibleToken{
     access(self) var allBrands: {UInt64: Brand}
     access(self) var allSchemas: {UInt64: Schema}
     access(self) var allTemplates: {UInt64: Template}
-    //access(self) var allNFTs: {UInt64: TroonAtomicNFTData}
+    access(self) var allNFTs: {UInt64: TroonAtomicNFTData}
 
     // Accounts ability to add capability
     access(self) var whiteListedAccounts: [Address]
 
+    // Create Schema Support all the mentioned Types
+    pub enum SchemaType: UInt8 {
+        pub case String
+        pub case Int
+        pub case Fix64
+        pub case Bool
+        pub case Address
+        pub case Array
+        pub case Any
+    }
 
- // A structure that contain all the data related to a Brand
+    // A structure that contain all the data related to a Brand
     pub struct Brand {
         pub let brandId: UInt64
         pub let brandName: String
@@ -67,16 +77,6 @@ pub contract xGStudios:NonFungibleToken{
         }
     }
 
-// Create Schema Support all the mentioned Types
-    pub enum SchemaType: UInt8 {
-        pub case String
-        pub case Int
-        pub case Fix64
-        pub case Bool
-        pub case Address
-        pub case Array
-        pub case Any
-    }
 
      // A structure that contain all the data related to a Schema
     pub struct Schema {
@@ -186,6 +186,11 @@ pub contract xGStudios:NonFungibleToken{
             
         }
 
+         // a method to get the immutable data of the template
+        pub fun getImmutableData(): {String:AnyStruct} {
+            return self.immutableData
+        }
+
         // a method to increment issued supply for template
         access(contract) fun incrementIssuedSupply(): UInt64 {
             pre {
@@ -197,53 +202,95 @@ pub contract xGStudios:NonFungibleToken{
         }
     }
 
-    pub resource NFT: NonFungibleToken.INFT{
-        pub let id:UInt64
-        pub var name:String
+    // A structure that link template and mint-no of NFT
+    pub struct TroonAtomicNFTData {
+        pub let templateID: UInt64
+        pub let mintNumber: UInt64
 
-        init(){
-            self.id=xGStudios.totalSupply
-            xGStudios.totalSupply = xGStudios.totalSupply + (1 as UInt64)
-            self.name = "Fahim"
+        init(templateID: UInt64, mintNumber: UInt64) {
+            self.templateID = templateID
+            self.mintNumber = mintNumber
         }
     }
 
-    pub resource interface MyCollectionPublic {
+
+    // The resource that represents the xGStudios NFTs
+    //
+    pub resource NFT: NonFungibleToken.INFT {
+        pub let id: UInt64
+        access(contract) let data: TroonAtomicNFTData
+
+        init(templateID: UInt64, mintNumber: UInt64) {
+            self.id=xGStudios.totalSupply
+            xGStudios.totalSupply = xGStudios.totalSupply + (1 as UInt64)
+            xGStudios.allNFTs[self.id] = TroonAtomicNFTData(templateID: templateID, mintNumber: mintNumber)
+            self.data = xGStudios.allNFTs[self.id]!
+            emit NFTMinted(nftId: self.id, templateId: templateID, mintNumber: mintNumber)
+        }
+        destroy(){
+            emit NFTDestroyed(id: self.id)
+        }
+    }
+
+
+    pub resource interface xGStudiosCollectionPublic {
         pub fun deposit(token: @NonFungibleToken.NFT)
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-        pub fun borrowEntireNFT(id: UInt64): &NFT
+        pub fun borrowEntirexGStudiosNFT(id: UInt64): &NFT {
+            // The id of the returned reference
+            // should be the same as the argument to the function
+            post {
+             result.id == id: "Cannot borrow Reward reference: The ID of the returned reference is incorrect"
+            }
+        }
     }
 
-    pub resource Collection:NonFungibleToken.Provider,NonFungibleToken.Receiver,NonFungibleToken.CollectionPublic,MyCollectionPublic{
-        pub var ownedNFTs: @{UInt64:NonFungibleToken.NFT}
+    // Collection is a resource that every user who owns NFTs 
+    // will store in their account to manage their NFTS
+    //
+    pub resource Collection: xGStudiosCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+        pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         pub fun deposit(token: @NonFungibleToken.NFT){
             let xGStudiosNFT <- token as! @NFT
-            emit Deposit(id: xGStudiosNFT.id, to: self.owner?.address)
-            self.ownedNFTs[xGStudiosNFT.id] <-! xGStudiosNFT
-        }
-
-        pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT{
-            pre{
-                self.ownedNFTs.containsKey(withdrawID):"NFT with this ID doesn't exists"
+            let id = xGStudiosNFT.id
+            let oldToken <- self.ownedNFTs[xGStudiosNFT.id] <-! xGStudiosNFT
+             if self.owner?.address != nil {
+                emit Deposit(id: id, to: self.owner?.address)
             }
-           let token <- self.ownedNFTs.remove(key:withdrawID)!
-           emit Withdraw(id: withdrawID, from: self.owner?.address)
-           return <- token
+            destroy oldToken
         }
 
-        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
-          return &self.ownedNFTs[id] as &NonFungibleToken.NFT
+
+          pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
+            let token <- self.ownedNFTs.remove(key: withdrawID) 
+                ?? panic("Cannot withdraw: template does not exist in the collection")
+            emit Withdraw(id: token.id, from: self.owner?.address)
+            return <-token
         }
 
-        pub fun borrowEntireNFT(id: UInt64): &NFT {
+       
+
+         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
+            emit NFTBorrowed(id:id)
+            return &self.ownedNFTs[id] as &NonFungibleToken.NFT
+        }
+        
+        // borrowEntirexGStudiosNFT returns a borrowed reference to a xGStudiosNFT
+        // so that the caller can read data and call methods from it.
+        //
+        // Parameters: id: The ID of the NFT to get the reference for
+        //
+        // Returns: A reference to the NFT
+        pub fun borrowEntirexGStudiosNFT(id: UInt64): &NFT {
         pre {
                 self.ownedNFTs[id] != nil: "NFT does not exist in the collection!"
             }
           let refNFT = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
           return refNFT as! &NFT
         }
+        
 
         pub fun getIDs(): [UInt64]{
             return self.ownedNFTs.keys
@@ -269,12 +316,12 @@ pub contract xGStudios:NonFungibleToken{
         pub fun createSchema(schemaName: String, format: {String: SchemaType})
         pub fun createTemplate(brandId: UInt64, schemaId: UInt64, maxSupply: UInt64, immutableData: {String: AnyStruct})
         pub fun removeTemplateById(templateId: UInt64): Bool 
-      //  pub fun mintNFT(templateId: UInt64, account: Address)
+        pub fun mintNFT(templateId: UInt64, account: Address)
     }
 
     pub resource AdminResource:NFTMethodsCapability,UserSpecialCapability{
       
-         // a variable which stores all Brands owned by a user
+        // a variable which stores all Brands owned by a user
         priv var ownedBrands: {UInt64: Brand}
         // a variable which stores all Schema owned by a user
         priv var ownedSchemas: {UInt64: Schema}
@@ -295,7 +342,7 @@ pub contract xGStudios:NonFungibleToken{
             self.capability = cap
         }
 
-         //method to create new Brand, only access by the verified user
+        //method to create new Brand, only access by the verified user
         pub fun createNewBrand(brandName: String, data: {String: String}) {
             pre {
                 // the transaction will instantly revert if
@@ -330,7 +377,7 @@ pub contract xGStudios:NonFungibleToken{
             emit BrandUpdated(brandId: brandId, brandName: oldBrand!.brandName, author: oldBrand!.author, data: data)
         }
 
-         //method to create new Schema, only access by the verified user
+        //method to create new Schema, only access by the verified user
         pub fun createSchema(schemaName: String, format: {String: SchemaType}) {
             pre {
                 // the transaction will instantly revert if 
@@ -347,7 +394,7 @@ pub contract xGStudios:NonFungibleToken{
             
         }
 
-         //method to create new Template, only access by the verified user
+        //method to create new Template, only access by the verified user
         pub fun createTemplate(brandId: UInt64, schemaId: UInt64, maxSupply: UInt64, immutableData: {String: AnyStruct}) {
             pre { 
                 // the transaction will instantly revert if 
@@ -365,7 +412,7 @@ pub contract xGStudios:NonFungibleToken{
             xGStudios.lastIssuedTemplateId = xGStudios.lastIssuedTemplateId + 1
         }
 
-         //method to remove template by id
+        //method to remove template by id
         pub fun removeTemplateById(templateId: UInt64): Bool {
             pre {
                 templateId != nil: "invalid template id"
@@ -378,13 +425,25 @@ pub contract xGStudios:NonFungibleToken{
         }
 
      
-        pub fun createNFT(): @NFT{
-            return <- create NFT()
+        //method to mint NFT, only access by the verified user
+        pub fun mintNFT(templateId: UInt64, account: Address) {
+            pre{
+                // the transaction will instantly revert if 
+                // the capability has not been added
+                self.capability != nil: "I don't have the special capability :("
+                xGStudios.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
+                self.ownedTemplates[templateId]!= nil: "Minter does not have specific template Id"
+                xGStudios.allTemplates[templateId] != nil: "Template Id must be valid"
+                }
+            let receiptAccount = getAccount(account)
+            let recipientCollection = receiptAccount
+                .getCapability(xGStudios.CollectionPublicPath)
+                .borrow<&{xGStudios.xGStudiosCollectionPublic}>()
+                ?? panic("Could not get receiver reference to the NFT Collection")
+            var newNFT: @NFT <- create NFT(templateID: templateId, mintNumber: xGStudios.allTemplates[templateId]!.incrementIssuedSupply())
+            recipientCollection.deposit(token: <-newNFT)
         }
 
-        pub fun logg(){
-            log("good")
-        }
 
         init(){
             self.ownedBrands = {}
@@ -393,6 +452,7 @@ pub contract xGStudios:NonFungibleToken{
             self.capability = nil
         }
     }
+
 
      //AdminCapability to add whiteListedAccounts
      pub resource AdminCapability{
@@ -412,19 +472,20 @@ pub contract xGStudios:NonFungibleToken{
     }
 
 
-   pub fun createAdminResource(): @AdminResource {
+    pub fun createAdminResource(): @AdminResource {
            return <- create AdminResource()
      }
 
-     pub fun createEmptyCollection(): @Collection {
+    pub fun createEmptyCollection(): @Collection {
         return <- create Collection()
     }
+
     //method to get all brands
     pub fun getAllBrands(): {UInt64: Brand} {
         return xGStudios.allBrands
     }
 
-     //method to get brand by id
+    //method to get brand by id
     pub fun getBrandById(brandId: UInt64): Brand {
         pre {
             xGStudios.allBrands[brandId] != nil: "brand Id does not exists"
@@ -432,7 +493,7 @@ pub contract xGStudios:NonFungibleToken{
         return xGStudios.allBrands[brandId]!
     }
 
-     //method to get all schema
+    //method to get all schema
     pub fun getAllSchemas(): {UInt64: Schema} {
         return xGStudios.allSchemas
     }
@@ -458,7 +519,15 @@ pub contract xGStudios:NonFungibleToken{
         return xGStudios.allTemplates[templateId]!
     } 
 
+    //method to get nft-data by id
+    pub fun getNFTDataById(nftId: UInt64): TroonAtomicNFTData {
+        pre {
+            xGStudios.allNFTs[nftId]!=nil:"nft id does not exist"
+        }
+        return xGStudios.allNFTs[nftId]!
+    }
 
+    
     //Initialize all variables with default values
     init(){
         self.lastIssuedBrandId = 1
@@ -468,7 +537,7 @@ pub contract xGStudios:NonFungibleToken{
         self.allBrands = {}
         self.allSchemas = {}
         self.allTemplates = {}
-        //self.allNFTs = {}
+        self.allNFTs = {}
         self.whiteListedAccounts = [self.account.address]
 
         self.AdminResourceStoragePath = /storage/TroonAdminResourcev01

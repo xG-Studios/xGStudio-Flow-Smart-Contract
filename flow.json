@@ -19,18 +19,26 @@
 			"address": "f8d6e0586b0a20c7",
 			"key": "a4e79d33dcb6644e2da4f4eedfb9e5ffbfc82a7106d491061df707537355ef46"
 		},
+		"my-testnet-account": {
+			"address": "0x91d21b0c6bbecfae",
+			"key": "d1aaf73279560172cd9e0419b63ec945110784316a6e71a8582f6692ac002a4f"
+		},
 		"emulator-account1": {
 			"address": "0x01cf0e2f2f715450",
-			"key": "e9f6817bdf4280faaa0770f946b17438e45cb52db9c852e9647821464c3ee76c"
+			"key": "0ce543a6d68202a44d09d78b157f143ea84bdc6825b435b6b158758c97fdc4cb"
 		},
 		"emulator-account2": {
 			"address": "0x179b6b1cb6755e31",
-			"key": "617c24db58507a46efe25dbf98b95ab12bcd7423831e1fdb77e7a0c6c3cc5b34"
+			"key": "def606a91aadc6306e64001b60eb8f58a4be7bd776b7fcde657c7cba91b1cdbe"
+		},
+		"emulator-account3": {
+			"address": "0xf3fcd2c1a78f5eee",
+			"key": "7889c4ac40678da600c21a4c26cb13b95e3cff6662cb74346968485f9e9c02ba"
 		}
 	},
 	"deployments": {
-		"emulator": {
-			"emulator-account": ["NonFungibleToken", "xGStudios"] 
+		"testnet": {
+			"my-testnet-account": ["NonFungibleToken", "xGStudios"] 
 		}
 	}
 }

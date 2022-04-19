@@ -24,7 +24,7 @@ transaction() {
         // store the empty NFT Collection in account storage
         signer.save( <- collection, to: xGStudios.CollectionStoragePath)
         // create a public capability for the Collection
-        signer.link<&{xGStudios.MyCollectionPublic}>(xGStudios.CollectionPublicPath, target:xGStudios.CollectionStoragePath)
+        signer.link<&{xGStudios.xGStudiosCollectionPublic}>(xGStudios.CollectionPublicPath, target:xGStudios.CollectionStoragePath)
         log("ok")
     }
 }
