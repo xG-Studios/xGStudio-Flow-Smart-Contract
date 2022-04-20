@@ -33,29 +33,8 @@ the core functionality of the NFT.
 
 | Network | Contract Address     |
 | ------- | -------------------- |
-| Testnet | `0x8f5c3c561b83eae3` |
+| Testnet | `0x91d21b0c6bbecfae` |
 
-## Instructions for creating Collection, Depositing NFT, Transfereing NFTs between Users
-
-A common order of creating NFT would be
- - Create Collection on account with `transaction/createCollection`.
- - Create Collection on another account with `transaction/createCollection`.
- - Deposit an NFTs to accounts having a collection with `transactions/depositNFT` using Contract deployed Account.
- - Transfer NFTs among collection holders with `transaction/transferNFT`.
-You can also see the scripts in `transactions/scripts` to see how information
-can be read from the NFTContract. 
-
-## NFTContract Events
-
-- ` pub event ContractInitialized()`
-
-  This event is emitted when the `NFTContract` will be initialized.
-
-- `pub event Withdraw(id: UInt64, from: Address?)`
-  This event is emitted when NFT will be withdrawn.
-
-- `pub event Deposit(id: UInt64, to: Address?)`
-  This event is emitted when NFT will be deposited.
 
 ## Start Flow
 
@@ -67,27 +46,86 @@ flow project deploy
 
 flow keys generate
 
-## Commands to create Collection on at least two of Accounts
+## Command to setup an Admin Account
 
-flow transactions send transactions/createCollection.cdc --signer emulator-account1
+flow transactions send ./transactions/setupAdminAccount.cdc --signer emulator-account1
 
-flow transactions send transactions/createCollection.cdc --signer emulator-account2
+## Command to add an Admin Account
 
-## Command to Deposit NFTs on Accounts
+flow transactions send ./transactions/addAdminAccount.cdc 0x2261e8612a517c85 --signer my-testnet-account
 
-flow transactions send transactions/depositNFT.cdc 0xfd43f9148d4b725d --signer emulator-account
+## Command to create a Brand
 
-## Command to Transfer NFT among Accounts
+flow transactions send ./transactions/createBrand.cdc "MY-BRAND" '{"1":"ONE"}' --signer emulator-account1
 
-flow transactions send transactions/transferNFT.cdc 0xe03daebed8ca0615 1 --signer emulator-account1
+## Command to create a Schema
 
-## Commands to view total NFTs deposited on an Account
+flow transactions send ./transactions/createSchema.cdc "MY-schema" --signer emulator-account1
 
-flow scripts execute scripts/getAccountNFT.cdc 0xfd43f9148d4b725d 1
+## Command to create a Template
 
-## Command to view particular NFT data of particular Account
+flow transactions send ./transactions/createTemplate.cdc 13 400 --signer emulator-account1
 
-flow scripts execute scripts/getNFTData.cdc 0xfd43f9148d4b725d 1
+## Command to create a Template with static data
+
+flow transactions send ./transactions/createTemplateStaticData.cdc 1 1 500 --signer emulator-account1
+
+## Commands to setup at least two of accounts to recieve NFTs
+
+flow transactions send ./transactions/setupAccount.cdc --signer emulator-account2
+
+flow transactions send ./transactions/setupAccount.cdc --signer emulator-account3
+
+## Command to Mint NFTs and deposit to given address
+
+flow transactions send ./transactions/mintNFT.cdc 1 0x64779312e1907c86 --signer emulator-account1
+
+flow transactions send ./transactions/mintNFT.cdc 1 0x9d6e7d65a5eb0811 --signer emulator-account1
+
+## Command to transfer NFTs from one account to another
+
+flow transactions send ./transactions/transferNFT.cdc 0x9d6e7d65a5eb0811 1 --signer emulator-account3
+
+
+### All Scripts Commands
+
+## Command to get all created Brands
+
+flow scripts execute ./scripts/getAllBrands.cdc --network=testnet
+
+## Command to get Brand by given ID
+
+flow scripts execute ./scripts/getBrandById.cdc 1 --network=testnet
+
+## Command to get all created Schemas
+
+flow scripts execute ./scripts/getallSchema.cdc --network=testnet
+
+## Command to get Schema by given ID
+
+flow scripts execute ./scripts/getSchemaById.cdc 2 --network=testnet
+
+## Command to get all created Templates
+
+flow scripts execute ./scripts/getAllTemplates.cdc
+
+## Command to get Template by given ID
+
+flow scripts execute ./scripts/getTemplateById.cdc 1
+
+## Command to get total minted NFTs
+
+flow scripts execute ./scripts/getTotalSupply.cdc
+
+## Command to get all minted NFTs for a given account
+
+flow scripts execute ./scripts/getAllNFTIds.cdc 0x9d6e7d65a5eb0811
+
+## Command to get NFT's Template data for given address
+
+flow scripts execute ./scripts/getNFTTemplateData.cdc 0x64779312e1907c86 
+
+
 
 
 

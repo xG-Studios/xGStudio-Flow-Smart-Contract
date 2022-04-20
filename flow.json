@@ -24,16 +24,16 @@
 			"key": "d1aaf73279560172cd9e0419b63ec945110784316a6e71a8582f6692ac002a4f"
 		},
 		"emulator-account1": {
-			"address": "0x01cf0e2f2f715450",
-			"key": "0ce543a6d68202a44d09d78b157f143ea84bdc6825b435b6b158758c97fdc4cb"
+			"address": "0x2261e8612a517c85",
+			"key": "d1aaf73279560172cd9e0419b63ec945110784316a6e71a8582f6692ac002a4f"
 		},
 		"emulator-account2": {
-			"address": "0x179b6b1cb6755e31",
-			"key": "def606a91aadc6306e64001b60eb8f58a4be7bd776b7fcde657c7cba91b1cdbe"
+			"address": "0x64779312e1907c86",
+			"key": "d1aaf73279560172cd9e0419b63ec945110784316a6e71a8582f6692ac002a4f"
 		},
 		"emulator-account3": {
-			"address": "0xf3fcd2c1a78f5eee",
-			"key": "7889c4ac40678da600c21a4c26cb13b95e3cff6662cb74346968485f9e9c02ba"
+			"address": "0x9d6e7d65a5eb0811",
+			"key": "d1aaf73279560172cd9e0419b63ec945110784316a6e71a8582f6692ac002a4f"
 		}
 	},
 	"deployments": {
