@@ -16,7 +16,6 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
 
         var nftMetaData : {String:AnyStruct} = {}
         
-        nftMetaData["mintNumber"] =nftData.mintNumber;
         nftMetaData["templateData"] = templateDataById;
         dict.insert(key: nftId,nftMetaData)
     }
