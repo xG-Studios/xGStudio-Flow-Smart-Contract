@@ -444,6 +444,8 @@ pub contract XGStudio: NonFungibleToken {
           //method to remove template by id
         pub fun removeTemplateById(templateId: UInt64): Bool {
             pre {
+                self.capability != nil: "I don't have the special capability :("
+                XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 templateId != nil: "invalid template id"
                 XGStudio.allTemplates[templateId]!=nil: "template id does not exist"
                 XGStudio.allTemplates[templateId]!.issuedSupply == 0: "could not remove template with given id"   
