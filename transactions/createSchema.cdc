@@ -19,7 +19,9 @@ transaction (schemaName:String){
             "raceName"    : XGStudio.SchemaType.String,
             "raceDate"    : XGStudio.SchemaType.Fix64,
             "raceDescription"   : XGStudio.SchemaType.String,
-            "raceLocation" :XGStudio.SchemaType.String
+            "raceLocation" :XGStudio.SchemaType.String,
+            "activityType"   : XGStudio.SchemaType.String,
+            "distance" :XGStudio.SchemaType.Fix64
             }
 
         actorResource.createSchema(schemaName: schemaName, format: format)

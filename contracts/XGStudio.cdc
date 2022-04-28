@@ -1,5 +1,4 @@
 import NonFungibleToken from 0x631e88ae7f1d7c20
-
 pub contract XGStudio: NonFungibleToken {
 
     // Events
@@ -203,10 +202,16 @@ pub contract XGStudio: NonFungibleToken {
     pub struct NFTData {
         pub let templateID: UInt64
         pub let mintNumber: UInt64
+        access(contract) var immutableData: {String: AnyStruct}
 
-        init(templateID: UInt64, mintNumber: UInt64) {
+        init(templateID: UInt64, mintNumber: UInt64, immutableData: {String: AnyStruct}) {
             self.templateID = templateID
             self.mintNumber = mintNumber
+            self.immutableData = immutableData
+        }
+        // a method to get the immutable data of the NFT
+        pub fun getImmutableData(): {String:AnyStruct} {
+            return self.immutableData
         }
     }
 
@@ -216,14 +221,14 @@ pub contract XGStudio: NonFungibleToken {
         pub let id: UInt64
         access(contract) let data: NFTData
 
-        init(templateID: UInt64, mintNumber: UInt64) {
+        init(templateID: UInt64, mintNumber: UInt64, immutableData: {String:AnyStruct}) {
             XGStudio.totalSupply = XGStudio.totalSupply + 1
             self.id = XGStudio.totalSupply
-            XGStudio.allNFTs[self.id] = NFTData(templateID: templateID, mintNumber: mintNumber)
+            XGStudio.allNFTs[self.id] = NFTData(templateID: templateID, mintNumber: mintNumber, immutableData: immutableData)
             self.data = XGStudio.allNFTs[self.id]!
             emit NFTMinted(nftId: self.id, templateId: templateID, mintNumber: mintNumber)
         }
-
+        
         destroy() {
             emit NFTDestroyed(id: self.id)
         }
@@ -234,7 +239,7 @@ pub contract XGStudio: NonFungibleToken {
         pub fun deposit(token: @NonFungibleToken.NFT)
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-        pub fun borrowXGStudio(id: UInt64): &XGStudio.NFT? {
+        pub fun borrowXGStudio_NFT(id: UInt64): &XGStudio.NFT? {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
             post {
@@ -275,13 +280,13 @@ pub contract XGStudio: NonFungibleToken {
             return &self.ownedNFTs[id] as &NonFungibleToken.NFT
         }
 
-         // borrowXGStudio returns a borrowed reference to a XGStudio
+         // borrowXGStudio_NFT returns a borrowed reference to a XGStudio
         // so that the caller can read data and call methods from it.
         //
         // Parameters: id: The ID of the NFT to get the reference for
         //
         // Returns: A reference to the NFT
-        pub fun borrowXGStudio(id: UInt64): &XGStudio.NFT? {
+        pub fun borrowXGStudio_NFT(id: UInt64): &XGStudio.NFT? {
             if self.ownedNFTs[id] != nil {
                 let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
                 return ref as! &XGStudio.NFT
@@ -310,7 +315,7 @@ pub contract XGStudio: NonFungibleToken {
         pub fun updateBrandData(brandId: UInt64, data: {String: String})
         pub fun createSchema(schemaName: String, format: {String: SchemaType})
         pub fun createTemplate(brandId: UInt64, schemaId: UInt64, maxSupply: UInt64, immutableData: {String: AnyStruct})
-        pub fun mintNFT(templateId: UInt64, account: Address)
+        pub fun mintNFT(templateId: UInt64, account: Address, immutableData:{String:AnyStruct})
         pub fun removeTemplateById(templateId: UInt64): Bool
     }
     
@@ -358,7 +363,7 @@ pub contract XGStudio: NonFungibleToken {
             pre {
                 // the transaction will instantly revert if
                 // the capability has not been added
-                self.capability != nil: "I don't have the special capability :("
+                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
 
@@ -374,7 +379,7 @@ pub contract XGStudio: NonFungibleToken {
             pre{
                 // the transaction will instantly revert if
                 // the capability has not been added
-                self.capability != nil: "I don't have the special capability :("
+                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 XGStudio.allBrands[brandId] != nil: "brand Id does not exists"
             }
@@ -393,7 +398,7 @@ pub contract XGStudio: NonFungibleToken {
             pre {
                 // the transaction will instantly revert if 
                 // the capability has not been added
-                self.capability != nil: "I don't have the special capability :("
+                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
 
@@ -410,7 +415,7 @@ pub contract XGStudio: NonFungibleToken {
             pre { 
                 // the transaction will instantly revert if 
                 // the capability has not been added
-                self.capability != nil: "I don't have the special capability :("
+                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 self.ownedBrands[brandId] != nil: "Collection Id Must be valid"
                 self.ownedSchemas[schemaId] != nil: "Schema Id Must be valid"
@@ -423,11 +428,11 @@ pub contract XGStudio: NonFungibleToken {
             XGStudio.lastIssuedTemplateId = XGStudio.lastIssuedTemplateId + 1
         }
         //method to mint NFT, only access by the verified user
-        pub fun mintNFT(templateId: UInt64, account: Address) {
+        pub fun mintNFT(templateId: UInt64, account: Address, immutableData:{String:AnyStruct}) {
             pre{
                 // the transaction will instantly revert if 
                 // the capability has not been added
-                self.capability != nil: "I don't have the special capability :("
+                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 self.ownedTemplates[templateId]!= nil: "Minter does not have specific template Id"
                 XGStudio.allTemplates[templateId] != nil: "Template Id must be valid"
@@ -437,14 +442,14 @@ pub contract XGStudio: NonFungibleToken {
                 .getCapability(XGStudio.CollectionPublicPath)
                 .borrow<&{XGStudio.XGStudioCollectionPublic}>()
                 ?? panic("Could not get receiver reference to the NFT Collection")
-            var newNFT: @NFT <- create NFT(templateID: templateId, mintNumber: XGStudio.allTemplates[templateId]!.incrementIssuedSupply())
+            var newNFT: @NFT <- create NFT(templateID: templateId, mintNumber: XGStudio.allTemplates[templateId]!.incrementIssuedSupply(), immutableData:immutableData )
             recipientCollection.deposit(token: <-newNFT)
         }
 
           //method to remove template by id
         pub fun removeTemplateById(templateId: UInt64): Bool {
             pre {
-                self.capability != nil: "I don't have the special capability :("
+                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 templateId != nil: "invalid template id"
                 XGStudio.allTemplates[templateId]!=nil: "template id does not exist"
@@ -469,9 +474,9 @@ pub contract XGStudio: NonFungibleToken {
     }
 
     //method to create Admin Resources
-    pub fun createAdminResource(): @AdminResource {
-        return <- create AdminResource()
-    }
+    // pub fun createAdminResource(): @AdminResource {
+    //     return <- create AdminResource()
+    // }
 
     //method to get all brands
     pub fun getAllBrands(): {UInt64: Brand} {
