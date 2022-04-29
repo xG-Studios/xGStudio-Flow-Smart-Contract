@@ -1,4 +1,4 @@
-import XGStudio from 0xff321cc072da62b3
+import XGStudio from 0xd9575c84a88eada0
 
 transaction(templateId: UInt64, account:Address){
 
@@ -11,7 +11,7 @@ transaction(templateId: UInt64, account:Address){
         let immutableData : {String: AnyStruct} = {
             "name" : "Nasir"  
         }
-        actorResource.mintNFT(templateId: templateId, account: account, immutableData:{}) 
+        actorResource.mintNFT(templateId: templateId, account: account, immutableData:immutableData) 
     }
     execute{
         log("nft minted")

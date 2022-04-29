@@ -361,12 +361,9 @@ pub contract XGStudio: NonFungibleToken {
         //method to create new Brand, only access by the verified user
         pub fun createNewBrand(brandName: String, data: {String: String}) {
             pre {
-                // the transaction will instantly revert if
-                // the capability has not been added
-                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
-
+            
             let newBrand = Brand(brandName: brandName, author: self.owner?.address!, data: data)
             XGStudio.allBrands[XGStudio.lastIssuedBrandId] = newBrand
             emit BrandCreated(brandId: XGStudio.lastIssuedBrandId ,brandName: brandName, author: self.owner?.address!, data: data)
@@ -377,9 +374,6 @@ pub contract XGStudio: NonFungibleToken {
         //method to update the existing Brand, only author of brand can update this brand
         pub fun updateBrandData(brandId: UInt64, data: {String: String}) {
             pre{
-                // the transaction will instantly revert if
-                // the capability has not been added
-                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 XGStudio.allBrands[brandId] != nil: "brand Id does not exists"
             }
@@ -396,9 +390,6 @@ pub contract XGStudio: NonFungibleToken {
         //method to create new Schema, only access by the verified user
         pub fun createSchema(schemaName: String, format: {String: SchemaType}) {
             pre {
-                // the transaction will instantly revert if 
-                // the capability has not been added
-                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
             }
 
@@ -413,9 +404,6 @@ pub contract XGStudio: NonFungibleToken {
         //method to create new Template, only access by the verified user
         pub fun createTemplate(brandId: UInt64, schemaId: UInt64, maxSupply: UInt64, immutableData: {String: AnyStruct}) {
             pre { 
-                // the transaction will instantly revert if 
-                // the capability has not been added
-                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 self.ownedBrands[brandId] != nil: "Collection Id Must be valid"
                 self.ownedSchemas[schemaId] != nil: "Schema Id Must be valid"
@@ -430,9 +418,6 @@ pub contract XGStudio: NonFungibleToken {
         //method to mint NFT, only access by the verified user
         pub fun mintNFT(templateId: UInt64, account: Address, immutableData:{String:AnyStruct}) {
             pre{
-                // the transaction will instantly revert if 
-                // the capability has not been added
-                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 self.ownedTemplates[templateId]!= nil: "Minter does not have specific template Id"
                 XGStudio.allTemplates[templateId] != nil: "Template Id must be valid"
@@ -449,7 +434,6 @@ pub contract XGStudio: NonFungibleToken {
           //method to remove template by id
         pub fun removeTemplateById(templateId: UInt64): Bool {
             pre {
-                // self.capability != nil: "I don't have the special capability :("
                 XGStudio.whiteListedAccounts.contains(self.owner!.address): "you are not authorized for this action"
                 templateId != nil: "invalid template id"
                 XGStudio.allTemplates[templateId]!=nil: "template id does not exist"
@@ -472,11 +456,6 @@ pub contract XGStudio: NonFungibleToken {
     pub fun createEmptyCollection(): @NonFungibleToken.Collection {
         return <- create XGStudio.Collection()
     }
-
-    //method to create Admin Resources
-    // pub fun createAdminResource(): @AdminResource {
-    //     return <- create AdminResource()
-    // }
 
     //method to get all brands
     pub fun getAllBrands(): {UInt64: Brand} {

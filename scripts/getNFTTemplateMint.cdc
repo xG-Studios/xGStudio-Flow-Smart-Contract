@@ -1,6 +1,6 @@
-import XGStudio from 0xff321cc072da62b3
+import XGStudio from 0xd9575c84a88eada0
 
-pub fun main(address: Address) : [{String:UInt64}]{
+pub fun main(address: Address) : [{String:AnyStruct}]{
     let account1 = getAccount(address)
     let acct1Capability =  account1.getCapability(XGStudio.CollectionPublicPath)
                             .borrow<&{XGStudio.XGStudioCollectionPublic}>()
@@ -8,16 +8,20 @@ pub fun main(address: Address) : [{String:UInt64}]{
 
     var nftIds =   acct1Capability.getIDs()
 
-    var arr : [{String:UInt64}] = []
+    var arr : [{String:AnyStruct}] = []
     
 
     for nftId in nftIds {
         var nftData = XGStudio.getNFTDataById(nftId: nftId)
-        var templateDataById =  XGStudio.getTemplateById(templateId: nftData.templateID)
+        var templateData =  XGStudio.getTemplateById(templateId: nftData.templateID)
 
-        var nftMetaData : {String:UInt64} = {}
+        var immutableData = nftData.getImmutableData()
+
+        var nftMetaData : {String:AnyStruct} = {}
         nftMetaData["templateId"] =nftData.templateID;
         nftMetaData["mintNumber"] =nftData.mintNumber;
+        nftMetaData["immutableData"] =immutableData;
+
 
         arr.append(nftMetaData)
     }

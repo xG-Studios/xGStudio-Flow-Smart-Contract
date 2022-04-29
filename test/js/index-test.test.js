@@ -4,14 +4,11 @@ import {
   emulator,
   getAccountAddress,
   deployContractByName,
-  getContractCode,
   getContractAddress,
   getTransactionCode,
   getScriptCode,
   executeScript,
-  sendTransaction,
-  mintFlow,
-  getFlowBalance,
+  sendTransaction
 } from "flow-js-testing";
 import { expect } from "@jest/globals";
 jest.setTimeout(10000);
@@ -94,88 +91,14 @@ describe("Deployment", () => {
   });
 });
 describe("Transactions", () => {
-  test("test transaction setup admin Account", async () => {
-    const name = "setupAdminAccount";
-
-    // Import participating accounts
-    const Charlie = await getAccountAddress("Charlie");
-
-    // Set transaction signers
-    const signers = [Charlie];
-
-    // Generate addressMap from import statements
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const XGStudio = await getContractAddress("XGStudio");
-    const addressMap = {
-      NonFungibleToken,
-      XGStudio,
-    };
-
-    let code = await getTransactionCode({
-      name,
-      addressMap,
-    });
-
-    let txResult;
-    try {
-      txResult = await sendTransaction({
-        code,
-        signers,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult);
-
-    // expect(txResult.errorMessage).toBe("");
-  });
-  test("test transaction add admin Account", async () => {
-    const name = "addAdminAccount";
-
-    // Import participating accounts
-    const Bob = await getAccountAddress("Bob");
-    const Charlie = await getAccountAddress("Charlie");
-
-    // Set transaction signers
-    const signers = [Bob];
-
-    // Generate addressMap from import statements
-    const NonFungibleToken = await getContractAddress("NonFungibleToken");
-    const XGStudio = await getContractAddress("XGStudio");
-    const addressMap = {
-      NonFungibleToken,
-      XGStudio,
-    };
-
-    let code = await getTransactionCode({
-      name,
-      addressMap,
-    });
-
-    let txResult;
-    try {
-      const args = [Charlie];
-
-      txResult = await sendTransaction({
-        code,
-        args,
-        signers,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx result ", txResult);
-
-    // expect(txResult.errorMessage).toBe("");
-  });
   test("test transaction  create brand", async () => {
     const name = "createBrand";
 
     // Import participating accounts
-    const Charlie = await getAccountAddress("Charlie");
+    const Bob = await getAccountAddress("Bob");
 
     // Set transaction signers
-    const signers = [Charlie];
+    const signers = [Bob];
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
@@ -201,7 +124,7 @@ describe("Transactions", () => {
     } catch (e) {
       console.log(e);
     }
-    console.log("tx Result", txResult);
+    console.log("tx Result", txResult[0]);
 
     // expect(txResult.errorMessage).toBe("");
   });
@@ -209,10 +132,10 @@ describe("Transactions", () => {
     const name = "createSchema";
 
     // Import participating accounts
-    const Charlie = await getAccountAddress("Charlie");
+    const Bob = await getAccountAddress("Bob");
 
     // Set transaction signers
-    const signers = [Charlie];
+    const signers = [Bob];
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
@@ -238,7 +161,7 @@ describe("Transactions", () => {
     } catch (e) {
       console.log(e);
     }
-    console.log("tx Result", txResult);
+    console.log("tx Result", txResult[0]);
 
     // expect(txResult.errorMessage).toBe("");
   });
@@ -246,10 +169,10 @@ describe("Transactions", () => {
     const name = "createTemplateStaticData";
 
     // Import participating accounts
-    const Charlie = await getAccountAddress("Charlie");
+    const Bob = await getAccountAddress("Bob");
 
     // Set transaction signers
-    const signers = [Charlie];
+    const signers = [Bob];
 
     // Generate addressMap from import statements
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
@@ -275,12 +198,12 @@ describe("Transactions", () => {
     } catch (e) {
       console.log(e);
     }
-    console.log("tx Result", txResult);
+    console.log("tx Result", txResult[0]);
 
     // expect(txResult.errorMessage).toBe("");
   });
-  test("test transaction  mint NFT", async () => {
-    const name = "mintNFT";
+  test("test transaction setup Account", async () => {
+    const name = "setupAccount";
 
     // Import participating accounts
     const Charlie = await getAccountAddress("Charlie");
@@ -300,7 +223,43 @@ describe("Transactions", () => {
       name,
       addressMap,
     });
-    // brandId, schemaId, maxSupply,immutableData
+
+    let txResult;
+    try {
+      txResult = await sendTransaction({
+        code,
+        signers,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    console.log("tx Result", txResult[0]);
+
+    // expect(txResult.errorMessage).toBe("");
+  });
+
+  test("test transaction  mint NFT", async () => {
+    const name = "mintNFT";
+
+    // Import participating accounts
+    const Bob = await getAccountAddress("Bob");
+    const Charlie = await getAccountAddress("Charlie")
+
+    // Set transaction signers
+    const signers = [Bob];
+
+    // Generate addressMap from import statements
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const XGStudio = await getContractAddress("XGStudio");
+    const addressMap = {
+      NonFungibleToken,
+      XGStudio,
+    };
+
+    let code = await getTransactionCode({
+      name,
+      addressMap,
+    });
     const args = [1, Charlie];
     let txResult;
     try {
@@ -312,7 +271,7 @@ describe("Transactions", () => {
     } catch (e) {
       console.log(e);
     }
-    console.log("tx Result", txResult);
+    console.log("tx Result", txResult[0]);
 
     // expect(txResult.errorMessage).toBe("");
   });
