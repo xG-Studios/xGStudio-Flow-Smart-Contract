@@ -1,4 +1,5 @@
-import XGStudio from 0xff321cc072da62b3
+import XGStudio from 0xd9575c84a88eada0
+
 
 transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64) {
     prepare(acct: AuthAccount) {
@@ -16,11 +17,12 @@ transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64) {
             "description" : "Second NFT for the xgStudio",
             "nftType"     : "AR",
             "gender"      : "Male",
-            "raceName"    : "horse race",
-            "raceDate"    : 1650451521.0 as Fix64,
-            "raceDescription"   : "horse amazing race",
-            "raceLocation" :"Mian essa"
-            
+            "raceName"    : "Lion",
+            "raceDate":  1649994582.0 as Fix64,
+            "raceDescription": "Lion race",
+            "raceLocation" : "Mian Essa",
+            "activityType" : "Running",
+            "distance"     :  2000.0 as Fix64
         }
         actorResource.createTemplate(brandId: brandId, schemaId: schemaId, maxSupply: maxSupply, immutableData: immutableData)
         log("Template created")

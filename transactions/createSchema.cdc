@@ -1,4 +1,4 @@
-import XGStudio from 0xff321cc072da62b3
+import XGStudio from 0xd9575c84a88eada0
 
 transaction (schemaName:String){
 
@@ -19,7 +19,9 @@ transaction (schemaName:String){
             "raceName"    : XGStudio.SchemaType.String,
             "raceDate"    : XGStudio.SchemaType.Fix64,
             "raceDescription"   : XGStudio.SchemaType.String,
-            "raceLocation" :XGStudio.SchemaType.String
+            "raceLocation" :XGStudio.SchemaType.String,
+            "activityType"   : XGStudio.SchemaType.String,
+            "distance" :XGStudio.SchemaType.Fix64
             }
 
         actorResource.createSchema(schemaName: schemaName, format: format)
