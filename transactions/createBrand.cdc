@@ -24,4 +24,3 @@ transaction (brandName:String){
     
     }
 }
- 

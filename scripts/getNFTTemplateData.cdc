@@ -12,11 +12,12 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
 
     for nftId in nftIds {
         var nftData = XGStudio.getNFTDataById(nftId: nftId)
-        var templateDataById =  XGStudio.getTemplateById(templateId: nftData.templateID)
+        var templateData =  XGStudio.getTemplateById(templateId: nftData.templateID)
 
         var nftMetaData : {String:AnyStruct} = {}
         
-        nftMetaData["templateData"] = templateDataById;
+        nftMetaData["templateData"] = templateData;
+        nftMetaData["nftData"] =  nftData
         dict.insert(key: nftId,nftMetaData)
     }
     return dict
