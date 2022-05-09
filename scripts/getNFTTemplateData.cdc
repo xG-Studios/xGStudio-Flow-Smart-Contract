@@ -1,4 +1,4 @@
-import XGStudio from 0xd9575c84a88eada0
+import XGStudio from 0xc357c8d061353f5f
 
 pub fun main(address: Address) : {UInt64: AnyStruct}{
     let account1 = getAccount(address)
@@ -12,11 +12,14 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
 
     for nftId in nftIds {
         var nftData = XGStudio.getNFTDataById(nftId: nftId)
-        var templateDataById =  XGStudio.getTemplateById(templateId: nftData.templateID)
+        var templateData =  XGStudio.getTemplateById(templateId: nftData.templateID)
 
         var nftMetaData : {String:AnyStruct} = {}
-        
-        nftMetaData["templateData"] = templateDataById;
+        var nftImmutableData = nftData.getImmutableData()
+
+        nftMetaData["templateData"] = templateData;
+        nftMetaData["nftImmutableData"] =nftImmutableData;
+
         dict.insert(key: nftId,nftMetaData)
     }
     return dict

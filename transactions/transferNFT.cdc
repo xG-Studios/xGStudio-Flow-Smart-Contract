@@ -1,5 +1,5 @@
-import XGStudio from 0xff321cc072da62b3
-import NonFungibleToken from 0x631e88ae7f1d7c20
+import XGStudio from 0xc357c8d061353f5f
+import NonFungibleToken from 0x1d7e57aa55817448
 
 // This transaction transfers a template to a recipient
 // This transaction is how a  user would transfer an NFT
