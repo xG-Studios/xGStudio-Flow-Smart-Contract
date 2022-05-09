@@ -48,7 +48,7 @@ can be read from the XGStudio smart-contract.
 | Network | Contract Address     |
 | ------- | -------------------- |
 | Mainnet | `0xc357c8d061353f5f` |
-| Testnet | `0xff321cc072da62b3` |
+| Testnet | `0xd9575c84a88eada0` |
 
 ### Deployment Contract on Emulator
 
