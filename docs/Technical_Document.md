@@ -2,10 +2,10 @@
 
 ## Instructions for Create Brand, Create Schema, Create Template, Mint NFT
 
+Right Now, only the contract owner have the admin access. Therefore, only contract owner can create Brand, Schema, Template and mint NFTs.
+
 A common order of creating NFT would be
 
-- Create Admin Account with `transaction/setupAdminAccount.cdc`.
-- Owner then create that account as XGStudio-Admin and gives ability to create Brand, Schema and Template for XGStudio contract with `transactions/AddAdminAccount.cdc`
 - Create new Brand with `transactions/createBrand.cdc` using Admin Account.
 - Create new Schema with `transactions/createSchema.cdc` using Admin Account.
 - Create new Template with `transactions/createTemplate.cdc` using Admin Account.
@@ -47,6 +47,7 @@ can be read from the XGStudio smart-contract.
 
 | Network | Contract Address     |
 | ------- | -------------------- |
+| Mainnet | `0xc357c8d061353f5f` |
 | Testnet | `0xff321cc072da62b3` |
 
 ### Deployment Contract on Emulator
