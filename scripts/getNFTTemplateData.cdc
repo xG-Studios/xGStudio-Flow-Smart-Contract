@@ -15,9 +15,11 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
         var templateData =  XGStudio.getTemplateById(templateId: nftData.templateID)
 
         var nftMetaData : {String:AnyStruct} = {}
-        
+        var nftImmutableData = nftData.getImmutableData()
+
         nftMetaData["templateData"] = templateData;
-        nftMetaData["nftData"] =  nftData
+        nftMetaData["nftImmutableData"] =nftImmutableData;
+        
         dict.insert(key: nftId,nftMetaData)
     }
     return dict
