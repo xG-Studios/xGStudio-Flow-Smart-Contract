@@ -1,4 +1,4 @@
-import XGStudio from 0xd9575c84a88eada0
+import XGStudio from 0xc357c8d061353f5f
 
 
 transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64) {

@@ -1,4 +1,4 @@
-import XGStudio from 0xd9575c84a88eada0
+import XGStudio from 0xc357c8d061353f5f
 
 // let data  : {String:String} = {
 //             "name":"XGStudio",

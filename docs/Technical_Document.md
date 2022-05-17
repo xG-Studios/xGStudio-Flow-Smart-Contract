@@ -9,8 +9,8 @@ A common order of creating NFT would be
 - Create new Brand with `transactions/createBrand.cdc` using Admin Account.
 - Create new Schema with `transactions/createSchema.cdc` using Admin Account.
 - Create new Template with `transactions/createTemplate.cdc` using Admin Account.
-- Create NFT Receiver with `transaction/setupAccount.cdc`.
-- Mint NFT with `transaction/mintNFT.cdc`.
+- Create NFT Receiver with `transactions/setupAccount.cdc`.
+- Mint NFT with `transactions/mintNFT.cdc`.
 
 You can also see the scripts in `scripts` to see how information
 can be read from the XGStudio smart-contract.
@@ -47,7 +47,8 @@ can be read from the XGStudio smart-contract.
 
 | Network | Contract Address     |
 | ------- | -------------------- |
-| Testnet | `0xff321cc072da62b3` |
+| Testnet | `0xd9575c84a88eada0` |
+| Mainnet | `0xc357c8d061353f5f` |
 
 ### Deployment Contract on Emulator
 
