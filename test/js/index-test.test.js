@@ -112,7 +112,7 @@ describe("Transactions", () => {
       name,
       addressMap,
     });
-    const args = ["HondaNorth", { name: "Alice" }];
+    const args = ["HondaNorth"];
 
     let txResult;
     try {

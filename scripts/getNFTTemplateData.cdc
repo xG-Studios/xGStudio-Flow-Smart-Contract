@@ -19,7 +19,7 @@ pub fun main(address: Address) : {UInt64: AnyStruct}{
 
         nftMetaData["templateData"] = templateData;
         nftMetaData["nftImmutableData"] =nftImmutableData;
-
+        
         dict.insert(key: nftId,nftMetaData)
     }
     return dict
