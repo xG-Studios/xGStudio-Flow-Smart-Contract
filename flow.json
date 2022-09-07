@@ -14,8 +14,8 @@
     "XGStudio": {
       "source": "./contracts/XGStudio.cdc",
       "aliases": {
-        "testnet": "0xd9575c84a88eada0",
-        "mainnet": "0xc357c8d061353f5f"
+        "testnet": "d9575c84a88eada0",
+        "mainnet": "c357c8d061353f5f"
       }
     },
     "NonFungibleToken": {

@@ -1,0 +1,14 @@
+{
+  "warning": "DO NOT COMMIT PRIVATE KEYS IN THIS FILE!!!!111111",
+  "deployments": {
+    "mainnet": {
+      "mainnet-deployer": ["XGStudio"]
+    }
+  },
+  "accounts": {
+    "mainnet-deployer": {
+      "address": "c357c8d061353f5f",
+      "key": "$MAINNET_PRIVATE_KEY"
+    }
+  }
+}

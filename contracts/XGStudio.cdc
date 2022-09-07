@@ -532,4 +532,3 @@ pub contract XGStudio: NonFungibleToken {
         emit ContractInitialized()
     }
 }
- 
