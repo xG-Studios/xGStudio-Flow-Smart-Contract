@@ -1,4 +1,6 @@
 import NonFungibleToken from "./NonFungibleToken.cdc"
+import FungibleToken from "./FungibleToken.cdc"
+import MetadataViews from "./MetadataViews.cdc"
 
 pub contract XGStudio: NonFungibleToken {
 
@@ -218,7 +220,7 @@ pub contract XGStudio: NonFungibleToken {
 
     // The resource that represents the XGStudio NFTs
     // 
-    pub resource NFT: NonFungibleToken.INFT {
+    pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
         access(contract) let data: NFTData
 
@@ -228,6 +230,98 @@ pub contract XGStudio: NonFungibleToken {
             XGStudio.allNFTs[self.id] = NFTData(templateID: templateID, mintNumber: mintNumber, immutableData: immutableData)
             self.data = XGStudio.allNFTs[self.id]!
             emit NFTMinted(nftId: self.id, templateId: templateID, mintNumber: mintNumber)
+        }
+
+        pub fun getViews(): [Type] {
+            return [
+                Type<MetadataViews.Display>(),
+                Type<MetadataViews.Editions>(),
+                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<MetadataViews.ExternalURL>(),
+                Type<MetadataViews.NFTCollectionData>(),
+                //Type<MetadataViews.Royalties>(),
+                Type<MetadataViews.Serial>()
+            ]
+        }
+
+        pub fun resolveView(_ view: Type): AnyStruct? {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let uniqueData = token.getImmutableData()
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+            let brand = XGStudio.getBrandById(brandId: template.brandId)
+
+
+            switch view {
+                case Type<MetadataViews.Display>():
+                    return MetadataViews.Display(
+                        name: (templateData["title"] as! String?) ?? "",
+                        description: (templateData["description"] as! String?) ?? "",
+                        thumbnail: MetadataViews.HTTPFile(
+                            url: (templateData["thumbnail"] as! String?) ?? "" // @TODO: Replace with mapping for legacy templates
+                        )
+                    )
+                // @TODO: Implement dynamic editions functionality
+                case Type<MetadataViews.Editions>():
+                    return MetadataViews.Editions([
+                        // Event Edition
+                        MetadataViews.Edition(
+                            name: (templateData["title"] as! String?) ?? "",
+                            number: template.issuedSupply,
+                            max: template.maxSupply
+                        )
+                    ])
+                case Type<MetadataViews.NFTCollectionDisplay>():
+                    return MetadataViews.NFTCollectionDisplay(
+                        name: brand.brandName == "xGrunning" ? "xGMove" : brand.brandName,
+                        description: brand.data["description"] ?? "",
+                        externalURL: MetadataViews.ExternalURL(brand.data["websiteUrl"] ?? "https://xgrunning.io"), // @TODO: Update fallback
+                        squareImage: MetadataViews.Media(
+                            file: MetadataViews.HTTPFile(
+                                url: brand.data["squareImage"] ?? ""
+                            ),
+                            mediaType: "image/png"
+                        ),
+                        bannerImage: MetadataViews.Media(
+                            file: MetadataViews.HTTPFile(
+                                url: brand.data["bannerImage"] ?? ""
+                            ),
+                            mediaType: "image/png"
+                        ),
+                        socials: {
+                            // @TODO: Implement dynamic socials list
+                            "twitter": MetadataViews.ExternalURL(brand.data["twitter"] ?? ""),
+                            "discord": MetadataViews.ExternalURL(brand.data["discord"] ?? "")
+                        }
+                    )
+                case Type<MetadataViews.ExternalURL>():
+                    return MetadataViews.ExternalURL((brand.data["websiteUrl"] ?? "https://xgrunning.io").concat("/rewards/").concat(self.id.toString())) // @TODO: Update fallback
+                case Type<MetadataViews.NFTCollectionData>():
+                    return MetadataViews.NFTCollectionData(
+                        storagePath: XGStudio.CollectionStoragePath,
+                        publicPath: XGStudio.CollectionPublicPath,
+                        providerPath: /private/XGStudioCollectionProvider,
+                        publicCollection: Type<&XGStudio.Collection{XGStudio.XGStudioCollectionPublic}>(),
+                        publicLinkedType: Type<&XGStudio.Collection{XGStudio.XGStudioCollectionPublic, NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(),
+                        providerLinkedType: Type<&XGStudio.Collection{XGStudio.XGStudioCollectionPublic, NonFungibleToken.CollectionPublic, NonFungibleToken.Provider, MetadataViews.ResolverCollection}>(),
+                        createEmptyCollectionFunction: (fun (): @XGStudio.Collection {
+                            return <- (XGStudio.createEmptyCollection() as! @XGStudio.Collection)
+                        })
+                    )
+                // @TODO: Implement Royalties
+                // case Type<MetadataViews.Royalties>():
+                //     return MetadataViews.Royalties([
+                //         MetadataViews.Royalty(
+                //             receiver: XGStudio.account.getCapability<&{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath()),
+                //             cut: 1337.0,
+                //             description: "REPLACE ME"
+                //         )
+                //     ])
+                case Type<MetadataViews.Serial>():
+                    return MetadataViews.Serial(self.id)
+            }
+
+            return nil
         }
         
         destroy() {
@@ -253,7 +347,7 @@ pub contract XGStudio: NonFungibleToken {
     // Collection is a resource that every user who owns NFTs 
     // will store in their account to manage their NFTS
     //
-    pub resource Collection: XGStudioCollectionPublic,NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+    pub resource Collection: XGStudioCollectionPublic,NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
@@ -295,6 +389,14 @@ pub contract XGStudio: NonFungibleToken {
                 return nil
             }
         }
+
+        pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
+            let nft = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+            let xgNFT = nft as! &XGStudio.NFT
+            return xgNFT
+        }
+
+
         init() {
             self.ownedNFTs <- {}
         }
