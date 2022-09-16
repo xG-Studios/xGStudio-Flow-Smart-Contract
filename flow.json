@@ -1,0 +1,51 @@
+{
+  "networks": {
+    "emulator": "127.0.0.1:3569",
+    "mainnet": "access.mainnet.nodes.onflow.org:9000",
+    "testnet": "access.devnet.nodes.onflow.org:9000"
+  },
+  "accounts": {
+    "emulator-account": {
+      "address": "f8d6e0586b0a20c7",
+      "key": "fa410cf84474444342d9da4e8bc55d89b8b4ea1d99853a2a948c3f205e72f2c0"
+    }
+  },
+  "contracts": {
+    "XGStudio": {
+      "source": "./contracts/XGStudio.cdc",
+      "aliases": {
+        "testnet": "d9575c84a88eada0",
+        "mainnet": "c357c8d061353f5f"
+      }
+    },
+    "NonFungibleToken": {
+      "source": "./contracts/NonFungibleToken.cdc",
+      "aliases": {
+        "emulator": "f8d6e0586b0a20c7",
+        "testnet": "631e88ae7f1d7c20",
+        "mainnet": "1d7e57aa55817448"
+      }
+    },
+    "FungibleToken": {
+      "source": "./contracts/FungibleToken.cdc",
+      "aliases": {
+        "emulator": "ee82856bf20e2aa6",
+        "testnet": "9a0766d93b6608b7",
+        "mainnet": "f233dcee88fe0abe"
+      }
+    },
+    "MetadataViews": {
+      "source": "./contracts/MetadataViews.cdc",
+      "aliases": {
+        "emulator": "f8d6e0586b0a20c7",
+        "testnet": "631e88ae7f1d7c20",
+        "mainnet": "1d7e57aa55817448"
+      }
+    }
+  },
+  "deployments": {
+    "emulator": {
+      "emulator-account": ["XGStudio"]
+    }
+  }
+}

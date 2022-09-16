@@ -1,4 +1,4 @@
-import XGStudio from 0xc357c8d061353f5f
+import XGStudio from "../contracts/XGStudio.cdc"
 
 transaction(templateId: UInt64, account:Address){
 

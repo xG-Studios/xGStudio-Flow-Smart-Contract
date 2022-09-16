@@ -18,7 +18,7 @@ can be read from the XGStudio smart-contract.
 ### XGStudio Events
 
 - Contract Initialized ->
-  ` pub event ContractInitialized()`
+  `pub event ContractInitialized()`
   This event is emitted when the `XGStudio` will be initialized.
 
 - Event for Brand ->
@@ -50,9 +50,9 @@ can be read from the XGStudio smart-contract.
 | Testnet | `0xd9575c84a88eada0` |
 | Mainnet | `0xc357c8d061353f5f` |
 
-
 ### Deployment Contract on Emulator
 
+- Start the emulator with predeployed standard contracts: `flow emulator --contracts`
 - Run `flow project deploy --network emulator`
   - All contracts are deployed to the emulator.
 
@@ -63,3 +63,14 @@ fields. These make it easier for a program to use and interact with them.
 If you are running these transactions manually in the Flow Playground or
 vscode extension, you will need to remove the transaction arguments and
 hard code the values that they are used for.
+
+### Deployment to testnet and mainnet
+
+- Create a `.env` file and add your testnet and/or mainnet private keys, see `.env.example`
+  - Alternatively add the env variables in your command, eg. `MAINNET_PRIVATE_KEY=123 flow deploy…"`
+- Run the deployment command:
+  - Testnet `flow deploy --update -f flow.json -f flow.testnet.json --network testnet`
+  - Mainnet `flow deploy --update -f flow.json -f flow.mainnet.json --network mainnet`
+
+The current deployment addresses (see above) are pre-filled in the deployment configs at `flow.(testnet|mainnet).json`.
+If you want to deploy to another account you need to change them as well.

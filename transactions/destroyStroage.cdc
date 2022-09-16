@@ -1,4 +1,4 @@
-import XGStudio from 0xc357c8d061353f5f
+import XGStudio from "../contracts/XGStudio.cdc"
     transaction(){
         prepare(acct:AuthAccount){
             let storage <- acct.load<@XGStudio.Collection>(from: XGStudio.CollectionStoragePath)

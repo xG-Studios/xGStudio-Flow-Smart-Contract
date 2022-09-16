@@ -1,4 +1,5 @@
-import NonFungibleToken from 0x1d7e57aa55817448
+import NonFungibleToken from "./NonFungibleToken.cdc"
+
 pub contract XGStudio: NonFungibleToken {
 
     // Events
@@ -277,7 +278,7 @@ pub contract XGStudio: NonFungibleToken {
         }
 
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
-            return &self.ownedNFTs[id] as &NonFungibleToken.NFT
+            return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
         }
 
          // borrowXGStudio_NFT returns a borrowed reference to a XGStudio
@@ -288,7 +289,7 @@ pub contract XGStudio: NonFungibleToken {
         // Returns: A reference to the NFT
         pub fun borrowXGStudio_NFT(id: UInt64): &XGStudio.NFT? {
             if self.ownedNFTs[id] != nil {
-                let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
+                let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT?
                 return ref as! &XGStudio.NFT
             } else {
                 return nil
