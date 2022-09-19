@@ -289,8 +289,8 @@ pub contract XGStudio: NonFungibleToken {
                             mediaType: "image/png"
                         ),
                         socials: {
-                            // @TODO: Implement dynamic socials list
                             "twitter": MetadataViews.ExternalURL(brand.data["twitter"] ?? ""),
+                            "instagram": MetadataViews.ExternalURL(brand.data["instagram"] ?? ""),
                             "discord": MetadataViews.ExternalURL(brand.data["discord"] ?? "")
                         }
                     )
