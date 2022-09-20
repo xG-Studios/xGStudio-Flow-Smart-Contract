@@ -273,7 +273,7 @@ pub contract XGStudio: NonFungibleToken {
                     return MetadataViews.NFTCollectionDisplay(
                         name: brand.data["name"] ?? "",
                         description: brand.data["description"] ?? "",
-                        externalURL: MetadataViews.ExternalURL(brand.data["websiteUrl"] ?? "https://xgrunning.io"),
+                        externalURL: MetadataViews.ExternalURL(brand.data["websiteUrl"] ?? "https://xgstudios.io"),
                         squareImage: MetadataViews.Media(
                             file: MetadataViews.HTTPFile(
                                 url: brand.data["squareUrl"] ?? ""
@@ -293,7 +293,7 @@ pub contract XGStudio: NonFungibleToken {
                         }
                     )
                 case Type<MetadataViews.ExternalURL>():
-                    return MetadataViews.ExternalURL((brand.data["websiteUrl"] ?? "https://xgrunning.io").concat("/rewards/").concat(self.id.toString())) // @TODO: Update fallback
+                    return MetadataViews.ExternalURL((brand.data["websiteUrl"] ?? "https://xgstudios.io").concat("/rewards/").concat(self.id.toString()))
                 case Type<MetadataViews.NFTCollectionData>():
                     return MetadataViews.NFTCollectionData(
                         storagePath: XGStudio.CollectionStoragePath,
