@@ -271,18 +271,18 @@ pub contract XGStudio: NonFungibleToken {
                     ])
                 case Type<MetadataViews.NFTCollectionDisplay>():
                     return MetadataViews.NFTCollectionDisplay(
-                        name: brand.brandName == "xGrunning" ? "xGMove" : brand.brandName,
+                        name: brand.data["name"] ?? "",
                         description: brand.data["description"] ?? "",
-                        externalURL: MetadataViews.ExternalURL(brand.data["websiteUrl"] ?? "https://xgrunning.io"), // @TODO: Update fallback
+                        externalURL: MetadataViews.ExternalURL(brand.data["websiteUrl"] ?? "https://xgrunning.io"),
                         squareImage: MetadataViews.Media(
                             file: MetadataViews.HTTPFile(
-                                url: brand.data["squareImage"] ?? ""
+                                url: brand.data["squareUrl"] ?? ""
                             ),
                             mediaType: "image/png"
                         ),
                         bannerImage: MetadataViews.Media(
                             file: MetadataViews.HTTPFile(
-                                url: brand.data["bannerImage"] ?? ""
+                                url: brand.data["bannerUrl"] ?? ""
                             ),
                             mediaType: "image/png"
                         ),
