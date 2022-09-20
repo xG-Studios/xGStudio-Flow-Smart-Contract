@@ -257,9 +257,7 @@ pub contract XGStudio: NonFungibleToken {
                     return MetadataViews.Display(
                         name: (templateData["title"] as! String?) ?? "",
                         description: (templateData["description"] as! String?) ?? "",
-                        thumbnail: MetadataViews.HTTPFile(
-                            url: (templateData["thumbnail"] as! String?) ?? "" // @TODO: Replace with mapping for legacy templates
-                        )
+                        thumbnail: self.getThumbnailFile()
                     )
                 // @TODO: Implement dynamic editions functionality
                 case Type<MetadataViews.Editions>():
@@ -323,7 +321,69 @@ pub contract XGStudio: NonFungibleToken {
 
             return nil
         }
-        
+
+        pub fun getThumbnailFile(): {MetadataViews.File} {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            if (templateData["ipfs"] != nil) {
+                let ipfs = templateData["ipfs"] as! {String: String}
+
+                return MetadataViews.IPFSFile(
+                    ipfs["cid"] ?? "",
+                    ipfs["path"]
+                )
+            }
+
+            if (templateData["raceName"] as! String? == "Hackney Half Marathon 2022") {
+                switch(templateData["nftType"] as! String?) {
+                    case "Finish LE": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/FINISH_LE.png")
+                    case "Finish": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/FINISH.png")
+                    case "1stM": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/1ST.png")
+                    case "1stF": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/1ST.png")
+                    case "2ndM": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/2ND.png")
+                    case "2ndF": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/2ND.png")
+                    case "3rdM": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/3RD.png")
+                    case "3rdF": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/3RD.png")
+                }
+            }
+
+            if (templateData["raceName"] as! String? == "ASICS London 10K 2022") {
+                switch(templateData["nftType"] as! String?) {
+                    case "Finish LE": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/FINISH_LE.png")
+                    case "Finish": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/FINISH.png")
+                }
+
+                switch(templateData["title"] as! String?) {
+                    case "1st - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/1ST.png")
+                    case "2nd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/2ND.png")
+                    case "3rd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/3RD.png")
+                }
+            }
+
+            if (templateData["raceName"] as! String? == "London Triathlon 2022") {
+                return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "/TRIATHLON.png")
+            }
+
+            if (templateData["raceName"] as! String? == "London Duathlon 2022") {
+                return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "/DUATHLON.png")
+            }
+
+            if (templateData["activityType"] as! String? == "Football") {
+                switch(templateData["activityType"] as! String?) {
+                    case "Team Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/TEAM_CLEANSHEET.png")
+                    case "Goal Scored": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/GOAL_SCORED.png")
+                    case "Team Goals": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/TEAM_GOAL.png")
+                    case "Win": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/WIN.png")
+                    case "Appearance": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/APPEARANCE.png")
+                    case "GK Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/CLEANSHEET.png")
+                }
+            }
+
+            return MetadataViews.HTTPFile(templateData["thumbnail"] as! String? ?? "")
+        }
+
         destroy() {
             emit NFTDestroyed(id: self.id)
         }
