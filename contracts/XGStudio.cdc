@@ -489,7 +489,7 @@ pub contract XGStudio: NonFungibleToken {
         pub fun borrowXGStudio_NFT(id: UInt64): &XGStudio.NFT? {
             if self.ownedNFTs[id] != nil {
                 let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT?
-                return ref as! &XGStudio.NFT
+                return ref as! &XGStudio.NFT?
             } else {
                 return nil
             }
@@ -739,3 +739,4 @@ pub contract XGStudio: NonFungibleToken {
         emit ContractInitialized()
     }
 }
+ 
