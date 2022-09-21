@@ -259,16 +259,8 @@ pub contract XGStudio: NonFungibleToken {
                         description: (templateData["description"] as! String?) ?? "",
                         thumbnail: self.getThumbnailFile()
                     )
-                // @TODO: Implement dynamic editions functionality
                 case Type<MetadataViews.Editions>():
-                    return MetadataViews.Editions([
-                        // Event Edition
-                        MetadataViews.Edition(
-                            name: (templateData["title"] as! String?) ?? "",
-                            number: template.issuedSupply,
-                            max: template.maxSupply
-                        )
-                    ])
+                    return MetadataViews.Editions(self.getEditions())
                 case Type<MetadataViews.NFTCollectionDisplay>():
                     return MetadataViews.NFTCollectionDisplay(
                         name: brand.data["name"] ?? "",
@@ -382,6 +374,59 @@ pub contract XGStudio: NonFungibleToken {
             }
 
             return MetadataViews.HTTPFile(templateData["thumbnail"] as! String? ?? "")
+        }
+
+        pub fun getEditions(): [MetadataViews.Edition] {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            let editions = [
+                // Title Edition
+                MetadataViews.Edition(
+                    name: (templateData["title"] as! String?) ?? "",
+                    number: self.data.mintNumber,
+                    max: template.maxSupply
+                )
+            ]
+
+            // If we're dealing with Football and have a season
+            if (templateData["activityType"] as! String? == "Football" && templateData["season"] != nil) {
+                let season = templateData["season"] as! String?;
+                let allTemplates = XGStudio.getAllTemplates()
+
+                // The combined maxSupply of all templates of this season
+                var seasonMaxSupply: UInt64 = 0
+                // The supply of templates that came before this one
+                var earlierSeasonSupply: UInt64 = 0
+
+                for i in allTemplates.keys {
+                    let template = allTemplates[i]!
+                    let templateData = template.getImmutableData()
+
+                    // We only care about templates with the same season
+                    if (templateData["season"] as! String? == season) {
+                        // Add maxSupply to the total
+                        seasonMaxSupply = seasonMaxSupply + template.maxSupply
+
+                        // Add maxSupply to earlier supply if the template came before this one
+                        if (i < token.templateID) {
+                            earlierSeasonSupply = earlierSeasonSupply + template.maxSupply
+                        }
+                    }
+                }
+
+                editions.append(
+                    // Football Season Edition
+                    MetadataViews.Edition(
+                        name: season,
+                        number: earlierSeasonSupply + self.data.mintNumber,
+                        max: seasonMaxSupply
+                    )
+                )
+            }
+
+            return editions
         }
 
         destroy() {
