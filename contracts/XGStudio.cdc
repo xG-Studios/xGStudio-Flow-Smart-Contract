@@ -239,7 +239,7 @@ pub contract XGStudio: NonFungibleToken {
                 Type<MetadataViews.NFTCollectionDisplay>(),
                 Type<MetadataViews.ExternalURL>(),
                 Type<MetadataViews.NFTCollectionData>(),
-                //Type<MetadataViews.Royalties>(),
+                Type<MetadataViews.Royalties>(),
                 Type<MetadataViews.Serial>()
             ]
         }
@@ -299,14 +299,14 @@ pub contract XGStudio: NonFungibleToken {
                         })
                     )
                 // @TODO: Implement Royalties
-                // case Type<MetadataViews.Royalties>():
-                //     return MetadataViews.Royalties([
-                //         MetadataViews.Royalty(
-                //             receiver: XGStudio.account.getCapability<&{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath()),
-                //             cut: 1337.0,
-                //             description: "REPLACE ME"
-                //         )
-                //     ])
+                case Type<MetadataViews.Royalties>():
+                    return MetadataViews.Royalties([
+                        MetadataViews.Royalty(
+                            receiver: XGStudio.account.getCapability<&{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath()),
+                            cut: 0.0,
+                            description: "REPLACE ME"
+                        )
+                    ])
                 case Type<MetadataViews.Serial>():
                     return MetadataViews.Serial(self.id)
             }
