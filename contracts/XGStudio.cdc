@@ -362,6 +362,10 @@ pub contract XGStudio: NonFungibleToken {
                 return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "/DUATHLON.png")
             }
 
+            if (templateData["raceName"] as! String? == "London Duathlon 2022") {
+                return MetadataViews.IPFSFile("QmPYTarYVgKMXQ4wHxGKLURpUKGzWkdUuyY1AkrKXxHDvn", "/xG_GENESIS_FINISH_GNR_THUMB.png")
+            }
+
             if (templateData["activityType"] as! String? == "Football") {
                 switch(templateData["activityType"] as! String?) {
                     case "Team Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/TEAM_CLEANSHEET.png")
