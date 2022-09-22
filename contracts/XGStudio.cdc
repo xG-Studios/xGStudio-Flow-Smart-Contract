@@ -374,6 +374,7 @@ pub contract XGStudio: NonFungibleToken {
                     case "Win": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/WIN.png")
                     case "Appearance": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/APPEARANCE.png")
                     case "GK Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/CLEANSHEET.png")
+                    case "Hat Trick": return MetadataViews.IPFSFile("QmbB8panH4gg4A3WpzVdoawHtYcXySLKbEphrEoYs9rZC6", "/HAT_TRICK_THUMB.png")
                 }
             }
 
