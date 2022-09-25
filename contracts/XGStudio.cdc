@@ -319,25 +319,22 @@ pub contract XGStudio: NonFungibleToken {
             let template =  XGStudio.getTemplateById(templateId: token.templateID)
             let templateData = template.getImmutableData()
 
-            if (templateData["ipfs"] != nil) {
-                let ipfs = templateData["ipfs"] as! {String: String}
-
-                return MetadataViews.IPFSFile(
-                    ipfs["cid"] ?? "",
-                    ipfs["path"]
-                )
+            //Default behaviour
+            if (templateData["thumbnail"] != nil) {
+                let cid = templateData["thumbnail"] as! String
+                return MetadataViews.IPFSFile(cid, "")
             }
 
             if (templateData["raceName"] as! String? == "Hackney Half Marathon 2022") {
                 switch(templateData["nftType"] as! String?) {
                     case "Finish LE": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/FINISH_LE.png")
                     case "Finish": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/FINISH.png")
-                    case "1stM": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/1ST.png")
-                    case "1stF": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/1ST.png")
-                    case "2ndM": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/2ND.png")
-                    case "2ndF": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/2ND.png")
-                    case "3rdM": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/3RD.png")
-                    case "3rdF": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/3RD.png")
+                }
+                
+                switch(templateData["title"] as! String?) {
+                    case "1st Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/1ST.png")
+                    case "2nd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/2ND.png")
+                    case "3rd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/3RD.png")
                 }
             }
 
@@ -367,7 +364,7 @@ pub contract XGStudio: NonFungibleToken {
             }
 
             if (templateData["activityType"] as! String? == "Football") {
-                switch(templateData["activityType"] as! String?) {
+                switch(templateData["xGRewardType"] as! String?) {
                     case "Team Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/TEAM_CLEANSHEET.png")
                     case "Goal Scored": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/GOAL_SCORED.png")
                     case "Team Goals": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/TEAM_GOAL.png")
@@ -378,7 +375,7 @@ pub contract XGStudio: NonFungibleToken {
                 }
             }
 
-            return MetadataViews.HTTPFile(templateData["thumbnail"] as! String? ?? "")
+            return MetadataViews.HTTPFile("")
         }
 
         pub fun getEditions(): [MetadataViews.Edition] {
