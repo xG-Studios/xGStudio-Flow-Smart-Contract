@@ -240,7 +240,8 @@ pub contract XGStudio: NonFungibleToken {
                 Type<MetadataViews.ExternalURL>(),
                 Type<MetadataViews.NFTCollectionData>(),
                 Type<MetadataViews.Royalties>(),
-                Type<MetadataViews.Serial>()
+                Type<MetadataViews.Serial>(),
+                Type<MetadataViews.Medias>()
             ]
         }
 
@@ -303,11 +304,28 @@ pub contract XGStudio: NonFungibleToken {
                     return MetadataViews.Royalties([])
                 case Type<MetadataViews.Serial>():
                     return MetadataViews.Serial(self.id)
+                case Type<MetadataViews.Medias>():
+                    let contentFile = self.getContentFile()
+                    let contentType = templateData["contentType"] as! String? ?? ""
+
+                    if (contentFile == nil) {
+                        return MetadataViews.Medias([])
+                    }
+
+                    return MetadataViews.Medias([
+                        MetadataViews.Media(
+                            contentFile!,
+                            contentType == "mp4" ? "video/mp4" : contentType
+                        )
+                    ])
             }
 
             return nil
         }
 
+        /*
+         * Get the thumbnail file from the NFT template's thumbnail
+         */
         pub fun getThumbnailFile(): {MetadataViews.File} {
             let token = XGStudio.getNFTDataById(nftId: self.id)
             let template =  XGStudio.getTemplateById(templateId: token.templateID)
@@ -370,6 +388,39 @@ pub contract XGStudio: NonFungibleToken {
             }
 
             return MetadataViews.HTTPFile("")
+        }
+
+        /*
+         * Get the content file from the NFT template's contentUrl
+         */
+        pub fun getContentFile(): {MetadataViews.File}? {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            let contentUrl = templateData["contentUrl"] as! String?
+
+            // Early return if contentUrl is not set
+            if (contentUrl == nil || contentUrl!.length < 4) {
+                return nil;
+            }
+
+            let protocol = contentUrl!.slice(from: 0, upTo: 4)
+
+            // Return legacy URLs starting with http as HTTPFile
+            if (protocol == "http") {
+                return MetadataViews.HTTPFile(contentUrl!)
+            }
+
+            let fileType = contentUrl!.slice(from: contentUrl!.length - 3, upTo: contentUrl!.length)
+
+            // Return legacy URLs ending with .mp4 as HTTPFile, prepended with the IPFS gateway
+            if (fileType == "mp4") {
+                return MetadataViews.HTTPFile("https://xgstudios.mypinata.cloud/ipfs/".concat(contentUrl!))
+            }
+
+            // Return contentUrl as IPFSFile
+            return MetadataViews.IPFSFile(contentUrl!, nil)
         }
 
         pub fun getEditions(): [MetadataViews.Edition] {
