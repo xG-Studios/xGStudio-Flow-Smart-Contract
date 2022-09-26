@@ -300,13 +300,7 @@ pub contract XGStudio: NonFungibleToken {
                     )
                 // @TODO: Implement Royalties
                 case Type<MetadataViews.Royalties>():
-                    return MetadataViews.Royalties([
-                        MetadataViews.Royalty(
-                            receiver: XGStudio.account.getCapability<&{FungibleToken.Receiver}>(MetadataViews.getRoyaltyReceiverPublicPath()),
-                            cut: 0.0,
-                            description: "REPLACE ME"
-                        )
-                    ])
+                    return MetadataViews.Royalties([])
                 case Type<MetadataViews.Serial>():
                     return MetadataViews.Serial(self.id)
             }
