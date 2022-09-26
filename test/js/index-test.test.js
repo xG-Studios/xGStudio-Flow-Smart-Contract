@@ -56,6 +56,24 @@ describe("Deployment", () => {
         to,
         update,
       });
+
+      await deployContractByName({
+        name: "FungibleToken",
+        to,
+        update,
+      });
+
+      await deployContractByName({
+        name: "MetadataViews",
+        to,
+        update,
+      });
+
+      await deployContractByName({
+        name,
+        to,
+        update,
+      });
     } catch (e) {
       console.log(e);
     }
@@ -67,8 +85,12 @@ describe("Deployment", () => {
     let update = true;
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const FungibleToken = await getContractAddress("FungibleToken");
+    const MetadataViews = await getContractAddress("MetadataViews");
     const addressMap = {
       NonFungibleToken,
+      FungibleToken,
+      MetadataViews,
     };
 
     let result;
