@@ -1,16 +1,17 @@
-import path from "path";
 import {
-  init,
-  emulator,
-  getAccountAddress,
   deployContractByName,
-  getContractAddress,
-  getTransactionCode,
-  getScriptCode,
+  emulator,
   executeScript,
+  getAccountAddress,
+  getContractAddress,
+  getScriptCode,
+  getTransactionCode,
+  init,
   sendTransaction,
+  shallPass,
+  shallResolve,
 } from "flow-js-testing";
-import { expect } from "@jest/globals";
+import path from "path";
 
 jest.setTimeout(10000);
 
@@ -36,48 +37,39 @@ describe("Replicate Playground Accounts", () => {
     console.log(
       "Four Playground accounts were created with following addresses"
     );
-    console.log("Alice:", Alice);
-    console.log("Bob:", Bob);
-    console.log("Charlie:", Charlie);
-    console.log("Dave:", Dave);
+    console.table({
+      Alice,
+      Bob,
+      Charlie,
+      Dave,
+    });
   });
 });
 
 describe("Deployment", () => {
-  test("Deploy for NonFungibleToken", async () => {
-    const name = "NonFungibleToken";
+  test("Deploy for library contracts", async () => {
     const to = await getAccountAddress("Alice");
-    let update = true;
 
-    let result;
-    try {
-      result = await deployContractByName({
-        name,
+    await shallPass(
+      deployContractByName({
+        name: "NonFungibleToken",
         to,
-        update,
-      });
+      })
+    );
 
-      await deployContractByName({
+    await shallPass(
+      deployContractByName({
         name: "FungibleToken",
         to,
-        update,
-      });
+      })
+    );
 
-      await deployContractByName({
+    await shallPass(
+      deployContractByName({
         name: "MetadataViews",
         to,
-        update,
-      });
-
-      await deployContractByName({
-        name,
-        to,
-        update,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    expect(name).toBe("NonFungibleToken");
+      })
+    );
   });
   test("Deploy for XGStudio", async () => {
     const name = "XGStudio";
@@ -93,18 +85,14 @@ describe("Deployment", () => {
       MetadataViews,
     };
 
-    let result;
-    try {
-      result = await deployContractByName({
+    await shallPass(
+      deployContractByName({
         name,
         to,
         addressMap,
         update,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    expect(name).toBe("XGStudio");
+      })
+    );
   });
 });
 describe("Transactions", () => {
@@ -131,19 +119,13 @@ describe("Transactions", () => {
     });
     const args = ["HondaNorth"];
 
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+    await shallPass(
+      sendTransaction({
         code,
         signers,
         args,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
   test("test transaction  create Schema", async () => {
     const name = "createSchema";
@@ -168,19 +150,13 @@ describe("Transactions", () => {
     });
     const args = ["Test Schema"];
 
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+    await shallPass(
+      sendTransaction({
         code,
         signers,
         args,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
   test("test transaction  create template", async () => {
     const name = "createTemplateStaticData";
@@ -205,19 +181,14 @@ describe("Transactions", () => {
     });
     // brandId, schemaId, maxSupply,immutableData
     const args = [1, 1, 100];
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+
+    await shallPass(
+      sendTransaction({
         code,
         signers,
         args,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
   test("test transaction setup Account", async () => {
     const name = "setupAccount";
@@ -241,18 +212,12 @@ describe("Transactions", () => {
       addressMap,
     });
 
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+    await shallPass(
+      sendTransaction({
         code,
         signers,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
 
   test("test transaction  mint NFT", async () => {
@@ -278,19 +243,13 @@ describe("Transactions", () => {
       addressMap,
     });
     const args = [1, Charlie];
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+    await shallPass(
+      sendTransaction({
         code,
         signers,
         args,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
 });
 describe("Scripts", () => {
@@ -321,10 +280,11 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+      })
+    );
   });
   test("get brand data", async () => {
     const name = "getAllBrands";
@@ -353,10 +313,11 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+      })
+    );
   });
   test("get brand data by Id", async () => {
     const name = "getBrandById";
@@ -386,11 +347,12 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
   test("get schema data", async () => {
     const name = "getallSchema";
@@ -419,10 +381,11 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+      })
+    );
   });
 
   test("get schema data by Id", async () => {
@@ -452,13 +415,13 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    console.log(typeof myInt);
     const args = [1];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
 
   test("get template data ", async () => {
@@ -488,10 +451,11 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+      })
+    );
   });
   test("get template data by Id", async () => {
     const name = "getTemplateById";
@@ -520,11 +484,12 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
     const args = [1];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
 
   test("get all nfts  data", async () => {
@@ -554,11 +519,12 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
     const args = [Charlie];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
 
   test("get nft template data", async () => {
@@ -588,10 +554,12 @@ describe("Scripts", () => {
       });
 
     const args = [Charlie];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
 });
