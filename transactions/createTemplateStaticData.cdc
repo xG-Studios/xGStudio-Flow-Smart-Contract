@@ -22,7 +22,8 @@ transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64) {
             "raceDescription": "Lion race",
             "raceLocation" : "Mian Essa",
             "activityType" : "Running",
-            "distance"     :  2000.0 as Fix64
+            "distance"     :  2000.0 as Fix64,
+            "thumbnail"    : "IPFSCID"
         }
         actorResource.createTemplate(brandId: brandId, schemaId: schemaId, maxSupply: maxSupply, immutableData: immutableData)
         log("Template created")

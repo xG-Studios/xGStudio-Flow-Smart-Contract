@@ -333,7 +333,7 @@ pub contract XGStudio: NonFungibleToken {
 
             //Default behaviour
             if (templateData["thumbnail"] != nil) {
-                let cid = templateData["thumbnail"] as! String
+                let cid = templateData["thumbnail"] as! String? ?? ""
                 return MetadataViews.IPFSFile(cid, "")
             }
 

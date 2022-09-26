@@ -563,3 +563,86 @@ describe("Scripts", () => {
     );
   });
 });
+
+describe("MetadataViews", () => {
+  test("NFTView", async () => {
+    // Import participating accounts
+    const Bob = await getAccountAddress("Bob");
+    const Charlie = await getAccountAddress("Charlie");
+
+    // Set transaction signers
+    const signers = [Bob];
+
+    // Generate addressMap from import statements
+    const MetadataViews = await getContractAddress("MetadataViews");
+    const XGStudio = await getContractAddress("XGStudio");
+    const addressMap = {
+      MetadataViews,
+      XGStudio,
+    };
+
+    const [result] = await shallPass(
+      sendTransaction({
+        name: "mintNFT",
+        signers,
+        args: [1, Charlie],
+        addressMap,
+      })
+    );
+
+    const nftID = result.events[0].data.nftId;
+
+    const [nftData] = await shallResolve(
+      executeScript({
+        name: "getNFTView",
+        args: [Charlie, nftID],
+      })
+    );
+
+    expect(nftData).toEqual({
+      name: "Second NFT",
+      description: "Second NFT for the xgStudio",
+      thumbnail: "ipfs://IPFSCID/",
+      owner: "0xf3fcd2c1a78f5eee",
+      type: "A.179b6b1cb6755e31.XGStudio.NFT",
+      royalties: [],
+      externalURL: "https://xgstudios.io/rewards/2",
+      serialNumber: 2,
+      collectionPublicPath: {
+        domain: "public",
+        identifier: "XGStudioCollection",
+      },
+      collectionStoragePath: {
+        domain: "storage",
+        identifier: "XGStudioCollection",
+      },
+      collectionProviderPath: {
+        domain: "private",
+        identifier: "XGStudioCollectionProvider",
+      },
+      collectionPublic:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic}",
+      collectionPublicLinkedType:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.Receiver,A.01cf0e2f2f715450.MetadataViews.ResolverCollection}",
+      collectionProviderLinkedType:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.Provider,A.01cf0e2f2f715450.MetadataViews.ResolverCollection}",
+      collectionName: "XGStudio",
+      collectionDescription:
+        "xG® rewards athletes’ real world sports participation with personalised digital collectibles and the xG® utility token.",
+      collectionExternalURL: "https://xgstudios.io",
+      collectionSquareImage:
+        "https://xgstudios.mypinata.cloud/ipfs/QmZP32SFcQ2rN2diEXsnwyFxZ5dmyFhuqAybDRANg2cEsk/XG_MOVE_THUMBNAIL.png",
+      collectionBannerImage:
+        "https://xgstudios.mypinata.cloud/ipfs/QmZP32SFcQ2rN2diEXsnwyFxZ5dmyFhuqAybDRANg2cEsk/XG_MOVE_COLLECTION_BANNER.png",
+      collectionSocials: {
+        discord: "https://discord.com/invite/uaYhFARqXM",
+        instagram: "https://www.instagram.com/xGStudios_/",
+        twitter: "https://twitter.com/xGStudios_",
+      },
+      editions: [{ name: "Second NFT", number: 2, max: 100 }],
+      traits: null,
+      medias: { items: [] },
+      license: null,
+    });
+  });
+});
