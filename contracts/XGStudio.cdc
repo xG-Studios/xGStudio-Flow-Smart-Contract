@@ -522,16 +522,17 @@ pub contract XGStudio: NonFungibleToken {
             let templateData = template.getImmutableData()
 
             let genericReceiver = getAccount(0x2ce293d39a72a72b).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
+
             // Only add receiver if the Profile capability exists
             let royalties: [MetadataViews.Royalty] = genericReceiver.check() ? [
                 MetadataViews.Royalty(
                     receiver: genericReceiver,
                     cut: 0.025,
-                    description: "xGStudios Cut"
+                    description: "Artist"
                 )
             ] : []
 
-            if (templateData["activityType"] as! String? == "Football") {
+            if (template.brandId == 1) {
                 let receiver = getAccount(0xa6fa47e9ad815dcf).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
 
                 // Only add receiver if the Profile capability exists
@@ -540,12 +541,11 @@ pub contract XGStudio: NonFungibleToken {
                         MetadataViews.Royalty(
                             receiver: receiver,
                             cut: 0.05,
-                            description: "xGFootball Cut"
+                            description: "xGFootball treasury"
                         )
                     )
                 }
-                
-            } else {
+            } else if (template.brandId == 2) {
                 // @TODO: Identify xGMove events
                 let receiver = getAccount(0xc2307c44b0903e33).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
                 
@@ -555,7 +555,7 @@ pub contract XGStudio: NonFungibleToken {
                         MetadataViews.Royalty(
                             receiver: receiver,
                             cut: 0.05,
-                            description: "xGMove Cut"
+                            description: "xGMove treasury"
                         )
                     )
                 }
