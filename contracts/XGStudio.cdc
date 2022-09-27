@@ -283,7 +283,8 @@ pub contract XGStudio: NonFungibleToken {
                         socials: {
                             "twitter": MetadataViews.ExternalURL(brand.data["twitter"] ?? ""),
                             "instagram": MetadataViews.ExternalURL(brand.data["instagram"] ?? ""),
-                            "discord": MetadataViews.ExternalURL(brand.data["discord"] ?? "")
+                            "discord": MetadataViews.ExternalURL(brand.data["discord"] ?? ""),
+                            "tiktok": MetadataViews.ExternalURL(brand.data["tiktok"] ?? "")
                         }
                     )
                 case Type<MetadataViews.ExternalURL>():
