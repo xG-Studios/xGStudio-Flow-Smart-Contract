@@ -258,7 +258,7 @@ pub contract XGStudio: NonFungibleToken {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
                         name: (templateData["title"] as! String?) ?? "",
-                        description: (templateData["description"] as! String?) ?? "",
+                        description: self.getAssetDescription(),
                         thumbnail: self.getThumbnailFile()
                     )
                 case Type<MetadataViews.Editions>():
@@ -322,6 +322,45 @@ pub contract XGStudio: NonFungibleToken {
             }
 
             return nil
+        }
+        /*         
+        * Get the NFT description template's thumbnail
+         */
+        pub fun getAssetDescription(): String {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            //Default behaviour
+            if (templateData["description"] != nil) {
+                let description = templateData["description"] as! String? ?? ""
+                return description
+            }
+
+
+            if (templateData["activityType"] as! String? == "Football") {
+                let commonText = 
+                    "\n\nGet xG Rewards for your football achievements.\nBuild your collection - your story.\nUnlock xG experiences.\n\nhttps://linktr.ee/xgstudios"
+                switch(templateData["xGRewardType"] as! String?) {
+                    case "Team Clean Sheet": 
+                        return "Team Clean Sheet: The xG Reward for players who appeared in a fixture where their team kept a clean sheet.".concat(commonText) 
+                    case "Goal Scored": 
+                        return "Goal: The xG Reward for the scorer of every goal.".concat(commonText)
+                    case "Team Goals": 
+                        return "Team Goals: The xG Reward for players who appeared in a fixture where their team scored.\nEach reward includes the total goals scored by their team in the game."
+                            .concat(commonText)  
+                    case "Win": 
+                        return "Win: The xG Reward for players who made an appearance a win.".concat(commonText)
+                    case "Appearance": 
+                        return "Appearance: The xG Reward for players with game time in a fixture.".concat(commonText)
+                    case "GK Clean Sheet": 
+                        return "Clean Sheet: The xG Reward for goalkeepers who keep a clean sheet in a match.".concat(commonText)
+                    case "Hat Trick": 
+                        return "Hat Trick: The xG Reward for scorers of three goals in a match.".concat(commonText)
+                }
+            }
+
+            return ""
         }
 
         /*
