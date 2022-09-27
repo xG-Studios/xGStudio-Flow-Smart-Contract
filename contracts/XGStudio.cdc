@@ -533,6 +533,21 @@ pub contract XGStudio: NonFungibleToken {
             ] : []
 
             if (template.brandId == 1) {
+                // xGMove
+                let receiver = getAccount(0xc2307c44b0903e33).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
+
+                // Only add receiver if the Profile capability exists
+                if (receiver.check()) {
+                    royalties.append(
+                        MetadataViews.Royalty(
+                            receiver: receiver,
+                            cut: 0.05,
+                            description: "xGMove treasury"
+                        )
+                    )
+                }
+            } else if (template.brandId == 2) {
+                // xGFootball
                 let receiver = getAccount(0xa6fa47e9ad815dcf).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
 
                 // Only add receiver if the Profile capability exists
@@ -542,20 +557,6 @@ pub contract XGStudio: NonFungibleToken {
                             receiver: receiver,
                             cut: 0.05,
                             description: "xGFootball treasury"
-                        )
-                    )
-                }
-            } else if (template.brandId == 2) {
-                // @TODO: Identify xGMove events
-                let receiver = getAccount(0xc2307c44b0903e33).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
-                
-                // Only add receiver if the Profile capability exists
-                if (receiver.check()) {
-                    royalties.append(
-                        MetadataViews.Royalty(
-                            receiver: receiver,
-                            cut: 0.05,
-                            description: "xGMove treasury"
                         )
                     )
                 }
