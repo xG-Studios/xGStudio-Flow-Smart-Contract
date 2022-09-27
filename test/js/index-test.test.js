@@ -665,6 +665,7 @@ describe("MetadataViews", () => {
         discord: "https://discord.com/invite/uaYhFARqXM",
         instagram: "https://www.instagram.com/xGStudios_/",
         twitter: "https://twitter.com/xGStudios_",
+        tiktok: "https://www.tiktok.com/@xgstudios"
       },
       editions: [{ name: "Second NFT", number: 2, max: 100 }],
       traits: null,
