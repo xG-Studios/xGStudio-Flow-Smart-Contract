@@ -70,6 +70,27 @@ describe("Deployment", () => {
         to,
       })
     );
+
+    await shallPass(
+      deployContractByName({
+        name: "Clock",
+        to,
+      })
+    );
+
+    await shallPass(
+      deployContractByName({
+        name: "ProfileCache",
+        to,
+      })
+    );
+
+    await shallPass(
+      deployContractByName({
+        name: "Profile",
+        to,
+      })
+    );
   });
   test("Deploy for XGStudio", async () => {
     const name = "XGStudio";
@@ -79,10 +100,16 @@ describe("Deployment", () => {
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
     const FungibleToken = await getContractAddress("FungibleToken");
     const MetadataViews = await getContractAddress("MetadataViews");
+    const Clock = await getContractAddress("Clock");
+    const ProfileCache = await getContractAddress("ProfileCache");
+    const Profile = await getContractAddress("Profile");
     const addressMap = {
       NonFungibleToken,
       FungibleToken,
       MetadataViews,
+      Clock,
+      ProfileCache,
+      Profile,
     };
 
     await shallPass(

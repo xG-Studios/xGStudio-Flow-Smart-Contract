@@ -1,7 +1,8 @@
 import NonFungibleToken from "./NonFungibleToken.cdc"
 import FungibleToken from "./FungibleToken.cdc"
 import MetadataViews from "./MetadataViews.cdc"
-
+import Profile from "./Profile.cdc"
+ 
 pub contract XGStudio: NonFungibleToken {
 
     // Events
@@ -301,7 +302,7 @@ pub contract XGStudio: NonFungibleToken {
                     )
                 // @TODO: Implement Royalties
                 case Type<MetadataViews.Royalties>():
-                    return MetadataViews.Royalties([])
+                    return self.getRoyalties()
                 case Type<MetadataViews.Serial>():
                     return MetadataViews.Serial(self.id)
                 case Type<MetadataViews.Medias>():
@@ -474,6 +475,54 @@ pub contract XGStudio: NonFungibleToken {
             }
 
             return editions
+        }
+
+        pub fun getRoyalties(): MetadataViews.Royalties {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            let genericReceiver = getAccount(0x2ce293d39a72a72b).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
+            // Only add receiver if the Profile capability exists
+            let royalties: [MetadataViews.Royalty] = genericReceiver.check() ? [
+                MetadataViews.Royalty(
+                    receiver: genericReceiver,
+                    cut: 0.025,
+                    description: "xGStudios Cut"
+                )
+            ] : []
+
+            if (templateData["activityType"] as! String? == "Football") {
+                let receiver = getAccount(0xa6fa47e9ad815dcf).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
+
+                // Only add receiver if the Profile capability exists
+                if (receiver.check()) {
+                    royalties.append(
+                        MetadataViews.Royalty(
+                            receiver: receiver,
+                            cut: 0.05,
+                            description: "xGFootball Cut"
+                        )
+                    )
+                }
+                
+            } else {
+                // @TODO: Identify xGMove events
+                let receiver = getAccount(0xc2307c44b0903e33).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
+                
+                // Only add receiver if the Profile capability exists
+                if (receiver.check()) {
+                    royalties.append(
+                        MetadataViews.Royalty(
+                            receiver: receiver,
+                            cut: 0.05,
+                            description: "xGMove Cut"
+                        )
+                    )
+                }
+            }
+
+            return MetadataViews.Royalties(royalties)
         }
 
         destroy() {
