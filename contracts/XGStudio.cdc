@@ -342,7 +342,7 @@ pub contract XGStudio: NonFungibleToken {
             if (templateData["activityType"] as! String? == "Football") {
                 let commonText = 
                     "\n\nGet xG Rewards for your football achievements.\nBuild your collection - your story.\nUnlock xG experiences.\n\nhttps://linktr.ee/xgstudios"
-                switch(templateData["xGRewardType"] as! String?) {
+                switch(templateData["xGRewardType"] as! String? ?? "") {
                     case "Team Clean Sheet": 
                         return "Team Clean Sheet: The xG Reward for players who appeared in a fixture where their team kept a clean sheet.".concat(commonText) 
                     case "Goal Scored": 
@@ -379,12 +379,12 @@ pub contract XGStudio: NonFungibleToken {
             }
 
             if (templateData["raceName"] as! String? == "Hackney Half Marathon 2022") {
-                switch(templateData["nftType"] as! String?) {
+                switch(templateData["nftType"] as! String? ?? "") {
                     case "Finish LE": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "FINISH_LE.png")
                     case "Finish": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "FINISH.png")
                 }
                 
-                switch(templateData["title"] as! String?) {
+                switch(templateData["title"] as! String? ?? "") {
                     case "1st Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "1ST.png")
                     case "2nd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "2ND.png")
                     case "3rd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "3RD.png")
@@ -392,12 +392,12 @@ pub contract XGStudio: NonFungibleToken {
             }
 
             if (templateData["raceName"] as! String? == "ASICS London 10K 2022") {
-                switch(templateData["nftType"] as! String?) {
+                switch(templateData["nftType"] as! String? ?? "") {
                     case "Finish LE": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "FINISH_LE.png")
                     case "Finish": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "FINISH.png")
                 }
 
-                switch(templateData["title"] as! String?) {
+                switch(templateData["title"] as! String? ?? "") {
                     case "1st - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "1ST.png")
                     case "2nd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "2ND.png")
                     case "3rd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "3RD.png")
@@ -417,7 +417,7 @@ pub contract XGStudio: NonFungibleToken {
             }
 
             if (templateData["activityType"] as! String? == "Football") {
-                switch(templateData["xGRewardType"] as! String?) {
+                switch(templateData["xGRewardType"] as! String? ?? "") {
                     case "Team Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "TEAM_CLEANSHEET.png")
                     case "Goal Scored": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "GOAL_SCORED.png")
                     case "Team Goals": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "TEAM_GOAL.png")
