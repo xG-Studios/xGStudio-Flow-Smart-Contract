@@ -380,51 +380,51 @@ pub contract XGStudio: NonFungibleToken {
 
             if (templateData["raceName"] as! String? == "Hackney Half Marathon 2022") {
                 switch(templateData["nftType"] as! String?) {
-                    case "Finish LE": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/FINISH_LE.png")
-                    case "Finish": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/FINISH.png")
+                    case "Finish LE": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "FINISH_LE.png")
+                    case "Finish": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "FINISH.png")
                 }
                 
                 switch(templateData["title"] as! String?) {
-                    case "1st Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/1ST.png")
-                    case "2nd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/2ND.png")
-                    case "3rd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "/3RD.png")
+                    case "1st Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "1ST.png")
+                    case "2nd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "2ND.png")
+                    case "3rd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "3RD.png")
                 }
             }
 
             if (templateData["raceName"] as! String? == "ASICS London 10K 2022") {
                 switch(templateData["nftType"] as! String?) {
-                    case "Finish LE": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/FINISH_LE.png")
-                    case "Finish": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/FINISH.png")
+                    case "Finish LE": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "FINISH_LE.png")
+                    case "Finish": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "FINISH.png")
                 }
 
                 switch(templateData["title"] as! String?) {
-                    case "1st - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/1ST.png")
-                    case "2nd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/2ND.png")
-                    case "3rd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "/3RD.png")
+                    case "1st - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "1ST.png")
+                    case "2nd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "2ND.png")
+                    case "3rd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "3RD.png")
                 }
             }
 
             if (templateData["raceName"] as! String? == "London Triathlon 2022") {
-                return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "/TRIATHLON.png")
+                return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "TRIATHLON.png")
             }
 
             if (templateData["raceName"] as! String? == "London Duathlon 2022") {
-                return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "/DUATHLON.png")
+                return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "DUATHLON.png")
             }
 
             if (templateData["raceName"] as! String? == "London Duathlon 2022") {
-                return MetadataViews.IPFSFile("QmPYTarYVgKMXQ4wHxGKLURpUKGzWkdUuyY1AkrKXxHDvn", "/xG_GENESIS_FINISH_GNR_THUMB.png")
+                return MetadataViews.IPFSFile("QmPYTarYVgKMXQ4wHxGKLURpUKGzWkdUuyY1AkrKXxHDvn", "xG_GENESIS_FINISH_GNR_THUMB.png")
             }
 
             if (templateData["activityType"] as! String? == "Football") {
                 switch(templateData["xGRewardType"] as! String?) {
-                    case "Team Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/TEAM_CLEANSHEET.png")
-                    case "Goal Scored": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/GOAL_SCORED.png")
-                    case "Team Goals": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/TEAM_GOAL.png")
-                    case "Win": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/WIN.png")
-                    case "Appearance": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/APPEARANCE.png")
-                    case "GK Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "/CLEANSHEET.png")
-                    case "Hat Trick": return MetadataViews.IPFSFile("QmbB8panH4gg4A3WpzVdoawHtYcXySLKbEphrEoYs9rZC6", "/HAT_TRICK_THUMB.png")
+                    case "Team Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "TEAM_CLEANSHEET.png")
+                    case "Goal Scored": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "GOAL_SCORED.png")
+                    case "Team Goals": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "TEAM_GOAL.png")
+                    case "Win": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "WIN.png")
+                    case "Appearance": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "APPEARANCE.png")
+                    case "GK Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "CLEANSHEET.png")
+                    case "Hat Trick": return MetadataViews.IPFSFile("QmbB8panH4gg4A3WpzVdoawHtYcXySLKbEphrEoYs9rZC6", "HAT_TRICK_THUMB.png")
                 }
             }
 

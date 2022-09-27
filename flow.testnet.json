@@ -8,7 +8,13 @@
   "accounts": {
     "testnet-deployer": {
       "address": "d9575c84a88eada0",
-      "key": "$TESTNET_PRIVATE_KEY"
+      "key": {
+        "type": "hex",
+        "index": 0,
+        "signatureAlgorithm": "ECDSA_secp256k1",
+        "hashAlgorithm": "SHA3_256",
+        "privateKey":"$TESTNET_PRIVATE_KEY"
+      }
     }
   }
 }
