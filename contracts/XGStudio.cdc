@@ -242,7 +242,8 @@ pub contract XGStudio: NonFungibleToken {
                 Type<MetadataViews.NFTCollectionData>(),
                 Type<MetadataViews.Royalties>(),
                 Type<MetadataViews.Serial>(),
-                Type<MetadataViews.Medias>()
+                Type<MetadataViews.Medias>(),
+                Type<MetadataViews.Traits>()
             ]
         }
 
@@ -320,6 +321,31 @@ pub contract XGStudio: NonFungibleToken {
                             contentType == "mp4" ? "video/mp4" : contentType
                         )
                     ])
+                case Type<MetadataViews.Traits>():                   
+                    if (if templateData["traits"] != nil) {
+                        return MetadataViews.dictToTraits(dict: templateData["traits"])
+                    }
+                    let excludedTraits = [
+                        "nftType", "xGRewardType",
+                        "contentUrl", 
+                        "contentType",
+                        "title",
+                        "description",
+                        "thumbnail",
+                        "royalties",
+                    ]
+                    let traitsView = MetadataViews.dictToTraits(dict: templateData, excludedNames: excludedTraits)
+
+                    let rewardTypeValue: String;
+                    if (templateData["xGRewardType"] != nil) {
+                        rewardTypeValue = templateData["xGRewardType"] as! String? ?? ""
+                    } else {
+                        rewardTypeValue = templateData["nftType"] as! String? ?? ""
+                    }
+                    let rewardTypeTrait = MetadataViews.Trait(name: "xGRewardType", value: rewardTypeValue, displayType: nil, rarity: nil)
+                    traitsView.addTrait(rewardTypeTrait)
+                    
+                    return traitsView
             }
 
             return nil
