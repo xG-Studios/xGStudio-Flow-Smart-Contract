@@ -14,16 +14,18 @@ transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64) {
             "contentType" : "Image",
             "contectUrl"  : "https://xgstudios.io",
             "title"       : "Second NFT",
-            "description" : "Second NFT for the xgStudio",
-            "nftType"     : "AR",
-            "gender"      : "Male",
-            "raceName"    : "Lion",
-            "raceDate":  1649994582.0 as Fix64,
-            "raceDescription": "Lion race",
-            "raceLocation" : "Mian Essa",
-            "activityType" : "Running",
-            "distance"     :  2000.0 as Fix64,
-            "thumbnail"    : "IPFSCID"
+            "title"       : "Win: Alexandra Park v Hilltop Women",
+            "xGRewardType": "Win",
+            "competition":"Greater London Women''s Football League",
+            "fixtureType":"Division 2 North",
+            "activityType":"Football",
+            "season":"2022/23",
+            "playerTeam":"Hilltop Women",
+            "oppositionTeam":"Alexandra Park",
+            "date":"04/09/2022",
+            "venue":"A",
+            "result":"W",
+            "score":"0 - 16"
         }
         actorResource.createTemplate(brandId: brandId, schemaId: schemaId, maxSupply: maxSupply, immutableData: immutableData)
         log("Template created")

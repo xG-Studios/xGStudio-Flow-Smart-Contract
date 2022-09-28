@@ -1,16 +1,17 @@
-import path from "path";
 import {
-  init,
-  emulator,
-  getAccountAddress,
   deployContractByName,
-  getContractAddress,
-  getTransactionCode,
-  getScriptCode,
+  emulator,
   executeScript,
+  getAccountAddress,
+  getContractAddress,
+  getScriptCode,
+  getTransactionCode,
+  init,
   sendTransaction,
+  shallPass,
+  shallResolve,
 } from "flow-js-testing";
-import { expect } from "@jest/globals";
+import path from "path";
 
 jest.setTimeout(10000);
 
@@ -36,30 +37,60 @@ describe("Replicate Playground Accounts", () => {
     console.log(
       "Four Playground accounts were created with following addresses"
     );
-    console.log("Alice:", Alice);
-    console.log("Bob:", Bob);
-    console.log("Charlie:", Charlie);
-    console.log("Dave:", Dave);
+    console.table({
+      Alice,
+      Bob,
+      Charlie,
+      Dave,
+    });
   });
 });
 
 describe("Deployment", () => {
-  test("Deploy for NonFungibleToken", async () => {
-    const name = "NonFungibleToken";
+  test("Deploy for library contracts", async () => {
     const to = await getAccountAddress("Alice");
-    let update = true;
 
-    let result;
-    try {
-      result = await deployContractByName({
-        name,
+    await shallPass(
+      deployContractByName({
+        name: "NonFungibleToken",
         to,
-        update,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    expect(name).toBe("NonFungibleToken");
+      })
+    );
+
+    await shallPass(
+      deployContractByName({
+        name: "FungibleToken",
+        to,
+      })
+    );
+
+    await shallPass(
+      deployContractByName({
+        name: "MetadataViews",
+        to,
+      })
+    );
+
+    await shallPass(
+      deployContractByName({
+        name: "Clock",
+        to,
+      })
+    );
+
+    await shallPass(
+      deployContractByName({
+        name: "ProfileCache",
+        to,
+      })
+    );
+
+    await shallPass(
+      deployContractByName({
+        name: "Profile",
+        to,
+      })
+    );
   });
   test("Deploy for XGStudio", async () => {
     const name = "XGStudio";
@@ -67,22 +98,28 @@ describe("Deployment", () => {
     let update = true;
 
     const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const FungibleToken = await getContractAddress("FungibleToken");
+    const MetadataViews = await getContractAddress("MetadataViews");
+    const Clock = await getContractAddress("Clock");
+    const ProfileCache = await getContractAddress("ProfileCache");
+    const Profile = await getContractAddress("Profile");
     const addressMap = {
       NonFungibleToken,
+      FungibleToken,
+      MetadataViews,
+      Clock,
+      ProfileCache,
+      Profile,
     };
 
-    let result;
-    try {
-      result = await deployContractByName({
+    await shallPass(
+      deployContractByName({
         name,
         to,
         addressMap,
         update,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    expect(name).toBe("XGStudio");
+      })
+    );
   });
 });
 describe("Transactions", () => {
@@ -109,19 +146,13 @@ describe("Transactions", () => {
     });
     const args = ["HondaNorth"];
 
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+    await shallPass(
+      sendTransaction({
         code,
         signers,
         args,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
   test("test transaction  create Schema", async () => {
     const name = "createSchema";
@@ -146,19 +177,13 @@ describe("Transactions", () => {
     });
     const args = ["Test Schema"];
 
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+    await shallPass(
+      sendTransaction({
         code,
         signers,
         args,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
   test("test transaction  create template", async () => {
     const name = "createTemplateStaticData";
@@ -183,19 +208,14 @@ describe("Transactions", () => {
     });
     // brandId, schemaId, maxSupply,immutableData
     const args = [1, 1, 100];
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+
+    await shallPass(
+      sendTransaction({
         code,
         signers,
         args,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
   test("test transaction setup Account", async () => {
     const name = "setupAccount";
@@ -219,18 +239,12 @@ describe("Transactions", () => {
       addressMap,
     });
 
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+    await shallPass(
+      sendTransaction({
         code,
         signers,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
 
   test("test transaction  mint NFT", async () => {
@@ -256,19 +270,13 @@ describe("Transactions", () => {
       addressMap,
     });
     const args = [1, Charlie];
-    let txResult;
-    try {
-      txResult = await sendTransaction({
+    await shallPass(
+      sendTransaction({
         code,
         signers,
         args,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    console.log("tx Result", txResult[0]);
-
-    // expect(txResult.errorMessage).toBe("");
+      })
+    );
   });
 });
 describe("Scripts", () => {
@@ -299,10 +307,11 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+      })
+    );
   });
   test("get brand data", async () => {
     const name = "getAllBrands";
@@ -331,10 +340,11 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+      })
+    );
   });
   test("get brand data by Id", async () => {
     const name = "getBrandById";
@@ -364,11 +374,12 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
   test("get schema data", async () => {
     const name = "getallSchema";
@@ -397,10 +408,11 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+      })
+    );
   });
 
   test("get schema data by Id", async () => {
@@ -430,13 +442,13 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    console.log(typeof myInt);
     const args = [1];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
 
   test("get template data ", async () => {
@@ -466,10 +478,11 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
 
-    const result = await executeScript({
-      code,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+      })
+    );
   });
   test("get template data by Id", async () => {
     const name = "getTemplateById";
@@ -498,11 +511,12 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
     const args = [1];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
 
   test("get all nfts  data", async () => {
@@ -532,11 +546,12 @@ describe("Scripts", () => {
         return `getAccount(${name})`;
       });
     const args = [Charlie];
-    const result = await executeScript({
-      code,
-      args,
-    });
-    console.log("result", result);
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
   });
 
   test("get nft template data", async () => {
@@ -566,10 +581,96 @@ describe("Scripts", () => {
       });
 
     const args = [Charlie];
-    const result = await executeScript({
-      code,
-      args,
+
+    await shallResolve(
+      executeScript({
+        code,
+        args,
+      })
+    );
+  });
+});
+
+describe("MetadataViews", () => {
+  test("NFTView", async () => {
+    // Import participating accounts
+    const Bob = await getAccountAddress("Bob");
+    const Charlie = await getAccountAddress("Charlie");
+
+    // Set transaction signers
+    const signers = [Bob];
+
+    // Generate addressMap from import statements
+    const MetadataViews = await getContractAddress("MetadataViews");
+    const XGStudio = await getContractAddress("XGStudio");
+    const addressMap = {
+      MetadataViews,
+      XGStudio,
+    };
+
+    const [result] = await shallPass(
+      sendTransaction({
+        name: "mintNFT",
+        signers,
+        args: [1, Charlie],
+        addressMap,
+      })
+    );
+
+    const nftID = result.events[0].data.nftId;
+
+    const [nftData] = await shallResolve(
+      executeScript({
+        name: "getNFTView",
+        args: [Charlie, nftID],
+      })
+    );
+
+    expect(nftData).toEqual({
+      name: "Second NFT",
+      description: "Second NFT for the xgStudio",
+      thumbnail: "ipfs://IPFSCID/",
+      owner: "0xf3fcd2c1a78f5eee",
+      type: "A.179b6b1cb6755e31.XGStudio.NFT",
+      royalties: [],
+      externalURL: "https://xgstudios.io/rewards/2",
+      serialNumber: 2,
+      collectionPublicPath: {
+        domain: "public",
+        identifier: "XGStudioCollection",
+      },
+      collectionStoragePath: {
+        domain: "storage",
+        identifier: "XGStudioCollection",
+      },
+      collectionProviderPath: {
+        domain: "private",
+        identifier: "XGStudioCollectionProvider",
+      },
+      collectionPublic:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic}",
+      collectionPublicLinkedType:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.Receiver,A.01cf0e2f2f715450.MetadataViews.ResolverCollection}",
+      collectionProviderLinkedType:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.Provider,A.01cf0e2f2f715450.MetadataViews.ResolverCollection}",
+      collectionName: "XGStudio",
+      collectionDescription:
+        "xG® rewards athletes’ real world sports participation with personalised digital collectibles and the xG® utility token.",
+      collectionExternalURL: "https://xgstudios.io",
+      collectionSquareImage:
+        "https://xgstudios.mypinata.cloud/ipfs/QmZP32SFcQ2rN2diEXsnwyFxZ5dmyFhuqAybDRANg2cEsk/XG_MOVE_THUMBNAIL.png",
+      collectionBannerImage:
+        "https://xgstudios.mypinata.cloud/ipfs/QmZP32SFcQ2rN2diEXsnwyFxZ5dmyFhuqAybDRANg2cEsk/XG_MOVE_COLLECTION_BANNER.png",
+      collectionSocials: {
+        discord: "https://discord.com/invite/uaYhFARqXM",
+        instagram: "https://www.instagram.com/xGStudios_/",
+        twitter: "https://twitter.com/xGStudios_",
+        tiktok: "https://www.tiktok.com/@xgstudios"
+      },
+      editions: [{ name: "Second NFT", number: 2, max: 100 }],
+      traits: null,
+      medias: { items: [] },
+      license: null,
     });
-    console.log("result", result);
   });
 });

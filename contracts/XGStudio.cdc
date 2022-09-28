@@ -1,5 +1,8 @@
 import NonFungibleToken from "./NonFungibleToken.cdc"
-
+import FungibleToken from "./FungibleToken.cdc"
+import MetadataViews from "./MetadataViews.cdc"
+import Profile from "./Profile.cdc"
+ 
 pub contract XGStudio: NonFungibleToken {
 
     // Events
@@ -218,7 +221,7 @@ pub contract XGStudio: NonFungibleToken {
 
     // The resource that represents the XGStudio NFTs
     // 
-    pub resource NFT: NonFungibleToken.INFT {
+    pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
         access(contract) let data: NFTData
 
@@ -229,7 +232,340 @@ pub contract XGStudio: NonFungibleToken {
             self.data = XGStudio.allNFTs[self.id]!
             emit NFTMinted(nftId: self.id, templateId: templateID, mintNumber: mintNumber)
         }
-        
+
+        pub fun getViews(): [Type] {
+            return [
+                Type<MetadataViews.Display>(),
+                Type<MetadataViews.Editions>(),
+                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<MetadataViews.ExternalURL>(),
+                Type<MetadataViews.NFTCollectionData>(),
+                Type<MetadataViews.Royalties>(),
+                Type<MetadataViews.Serial>(),
+                Type<MetadataViews.Medias>()
+            ]
+        }
+
+        pub fun resolveView(_ view: Type): AnyStruct? {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let uniqueData = token.getImmutableData()
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+            let brand = XGStudio.getBrandById(brandId: template.brandId)
+
+
+            switch view {
+                case Type<MetadataViews.Display>():
+                    return MetadataViews.Display(
+                        name: (templateData["title"] as! String?) ?? "",
+                        description: self.getAssetDescription(),
+                        thumbnail: self.getThumbnailFile()
+                    )
+                case Type<MetadataViews.Editions>():
+                    return MetadataViews.Editions(self.getEditions())
+                case Type<MetadataViews.NFTCollectionDisplay>():
+                    return MetadataViews.NFTCollectionDisplay(
+                        name: brand.data["name"] ?? "",
+                        description: brand.data["description"] ?? "",
+                        externalURL: MetadataViews.ExternalURL(brand.data["websiteUrl"] ?? "https://xgstudios.io"),
+                        squareImage: MetadataViews.Media(
+                            file: MetadataViews.HTTPFile(
+                                url: brand.data["squareUrl"] ?? ""
+                            ),
+                            mediaType: "image/png"
+                        ),
+                        bannerImage: MetadataViews.Media(
+                            file: MetadataViews.HTTPFile(
+                                url: brand.data["bannerUrl"] ?? ""
+                            ),
+                            mediaType: "image/png"
+                        ),
+                        socials: {
+                            "twitter": MetadataViews.ExternalURL(brand.data["twitter"] ?? ""),
+                            "instagram": MetadataViews.ExternalURL(brand.data["instagram"] ?? ""),
+                            "discord": MetadataViews.ExternalURL(brand.data["discord"] ?? ""),
+                            "tiktok": MetadataViews.ExternalURL(brand.data["tiktok"] ?? "")
+                        }
+                    )
+                case Type<MetadataViews.ExternalURL>():
+                    return MetadataViews.ExternalURL((brand.data["websiteUrl"] ?? "https://xgstudios.io").concat("/rewards/").concat(self.id.toString()))
+                case Type<MetadataViews.NFTCollectionData>():
+                    return MetadataViews.NFTCollectionData(
+                        storagePath: XGStudio.CollectionStoragePath,
+                        publicPath: XGStudio.CollectionPublicPath,
+                        providerPath: /private/XGStudioCollectionProvider,
+                        publicCollection: Type<&XGStudio.Collection{XGStudio.XGStudioCollectionPublic}>(),
+                        publicLinkedType: Type<&XGStudio.Collection{XGStudio.XGStudioCollectionPublic, NonFungibleToken.CollectionPublic, NonFungibleToken.Receiver, MetadataViews.ResolverCollection}>(),
+                        providerLinkedType: Type<&XGStudio.Collection{XGStudio.XGStudioCollectionPublic, NonFungibleToken.CollectionPublic, NonFungibleToken.Provider, MetadataViews.ResolverCollection}>(),
+                        createEmptyCollectionFunction: (fun (): @XGStudio.Collection {
+                            return <- (XGStudio.createEmptyCollection() as! @XGStudio.Collection)
+                        })
+                    )
+                // @TODO: Implement Royalties
+                case Type<MetadataViews.Royalties>():
+                    return self.getRoyalties()
+                case Type<MetadataViews.Serial>():
+                    return MetadataViews.Serial(self.id)
+                case Type<MetadataViews.Medias>():
+                    let contentFile = self.getContentFile()
+                    let contentType = templateData["contentType"] as! String? ?? ""
+
+                    if (contentFile == nil) {
+                        return MetadataViews.Medias([])
+                    }
+
+                    return MetadataViews.Medias([
+                        MetadataViews.Media(
+                            contentFile!,
+                            contentType == "mp4" ? "video/mp4" : contentType
+                        )
+                    ])
+            }
+
+            return nil
+        }
+        /*         
+        * Get the NFT description template's thumbnail
+         */
+        pub fun getAssetDescription(): String {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            //Default behaviour
+            if (templateData["description"] != nil) {
+                let description = templateData["description"] as! String? ?? ""
+                return description
+            }
+
+
+            if (templateData["activityType"] as! String? == "Football") {
+                let commonText = 
+                    "\n\nGet xG Rewards for your football achievements.\nBuild your collection - your story.\nUnlock xG experiences.\n\nhttps://linktr.ee/xgstudios"
+                switch(templateData["xGRewardType"] as! String? ?? "") {
+                    case "Team Clean Sheet": 
+                        return "Team Clean Sheet: The xG Reward for players who appeared in a fixture where their team kept a clean sheet.".concat(commonText) 
+                    case "Goal Scored": 
+                        return "Goal: The xG Reward for the scorer of every goal.".concat(commonText)
+                    case "Team Goals": 
+                        return "Team Goals: The xG Reward for players who appeared in a fixture where their team scored.\nEach reward includes the total goals scored by their team in the game."
+                            .concat(commonText)  
+                    case "Win": 
+                        return "Win: The xG Reward for players who made an appearance a win.".concat(commonText)
+                    case "Appearance": 
+                        return "Appearance: The xG Reward for players with game time in a fixture.".concat(commonText)
+                    case "GK Clean Sheet": 
+                        return "Clean Sheet: The xG Reward for goalkeepers who keep a clean sheet in a match.".concat(commonText)
+                    case "Hat Trick": 
+                        return "Hat Trick: The xG Reward for scorers of three goals in a match.".concat(commonText)
+                }
+            }
+
+            return ""
+        }
+
+        /*
+         * Get the thumbnail file from the NFT template's thumbnail
+         */
+        pub fun getThumbnailFile(): {MetadataViews.File} {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            //Default behaviour
+            if (templateData["thumbnail"] != nil) {
+                let cid = templateData["thumbnail"] as! String? ?? ""
+                return MetadataViews.IPFSFile(cid, "")
+            }
+
+            if (templateData["raceName"] as! String? == "Hackney Half Marathon 2022") {
+                switch(templateData["nftType"] as! String? ?? "") {
+                    case "Finish LE": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "FINISH_LE.png")
+                    case "Finish": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "FINISH.png")
+                }
+                
+                switch(templateData["title"] as! String? ?? "") {
+                    case "1st Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "1ST.png")
+                    case "2nd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "2ND.png")
+                    case "3rd Place - HACKNEY HALF 2022": return MetadataViews.IPFSFile("QmUAoUBy4xPRDqH7BKx5ZpVYcFzums9scZu83ccefLrFkr", "3RD.png")
+                }
+            }
+
+            if (templateData["raceName"] as! String? == "ASICS London 10K 2022") {
+                switch(templateData["nftType"] as! String? ?? "") {
+                    case "Finish LE": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "FINISH_LE.png")
+                    case "Finish": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "FINISH.png")
+                }
+
+                switch(templateData["title"] as! String? ?? "") {
+                    case "1st - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "1ST.png")
+                    case "2nd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "2ND.png")
+                    case "3rd - ASICS LONDON 10K": return MetadataViews.IPFSFile("Qmdu543z9kvSgX5fS54rpF8sFcX4t5ZbaFBk7YhZFQcn5Y", "3RD.png")
+                }
+            }
+
+            if (templateData["raceName"] as! String? == "London Triathlon 2022") {
+                return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "TRIATHLON.png")
+            }
+
+            if (templateData["raceName"] as! String? == "London Duathlon 2022") {
+                return MetadataViews.IPFSFile("QmSr56aRWEDtD9fEHQrQw9gZjZwYuVK68YUDnHyF1vWcqj", "DUATHLON.png")
+            }
+
+            if (templateData["raceName"] as! String? == "London Duathlon 2022") {
+                return MetadataViews.IPFSFile("QmPYTarYVgKMXQ4wHxGKLURpUKGzWkdUuyY1AkrKXxHDvn", "xG_GENESIS_FINISH_GNR_THUMB.png")
+            }
+
+            if (templateData["activityType"] as! String? == "Football") {
+                switch(templateData["xGRewardType"] as! String? ?? "") {
+                    case "Team Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "TEAM_CLEANSHEET.png")
+                    case "Goal Scored": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "GOAL_SCORED.png")
+                    case "Team Goals": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "TEAM_GOAL.png")
+                    case "Win": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "WIN.png")
+                    case "Appearance": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "APPEARANCE.png")
+                    case "GK Clean Sheet": return MetadataViews.IPFSFile("QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k", "CLEANSHEET.png")
+                    case "Hat Trick": return MetadataViews.IPFSFile("QmbB8panH4gg4A3WpzVdoawHtYcXySLKbEphrEoYs9rZC6", "HAT_TRICK_THUMB.png")
+                }
+            }
+
+            return MetadataViews.HTTPFile("")
+        }
+
+        /*
+         * Get the content file from the NFT template's contentUrl
+         */
+        pub fun getContentFile(): {MetadataViews.File}? {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            let contentUrl = templateData["contentUrl"] as! String?
+
+            // Early return if contentUrl is not set
+            if (contentUrl == nil || contentUrl!.length < 4) {
+                return nil;
+            }
+
+            let protocol = contentUrl!.slice(from: 0, upTo: 4)
+
+            // Return legacy URLs starting with http as HTTPFile
+            if (protocol == "http") {
+                return MetadataViews.HTTPFile(contentUrl!)
+            }
+
+            let fileType = contentUrl!.slice(from: contentUrl!.length - 3, upTo: contentUrl!.length)
+
+            // Return legacy URLs ending with .mp4 as HTTPFile, prepended with the IPFS gateway
+            if (fileType == "mp4") {
+                return MetadataViews.HTTPFile("https://xgstudios.mypinata.cloud/ipfs/".concat(contentUrl!))
+            }
+
+            // Return contentUrl as IPFSFile
+            return MetadataViews.IPFSFile(contentUrl!, nil)
+        }
+
+        pub fun getEditions(): [MetadataViews.Edition] {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            let editions = [
+                // Title Edition
+                MetadataViews.Edition(
+                    name: (templateData["title"] as! String?) ?? "",
+                    number: self.data.mintNumber,
+                    max: template.maxSupply
+                )
+            ]
+
+            // If we're dealing with Football and have a season
+            if (templateData["activityType"] as! String? == "Football" && templateData["season"] != nil) {
+                let season = templateData["season"] as! String?;
+                let allTemplates = XGStudio.getAllTemplates()
+
+                // The combined maxSupply of all templates of this season
+                var seasonMaxSupply: UInt64 = 0
+                // The supply of templates that came before this one
+                var earlierSeasonSupply: UInt64 = 0
+
+                for i in allTemplates.keys {
+                    let template = allTemplates[i]!
+                    let templateData = template.getImmutableData()
+
+                    // We only care about templates with the same season
+                    if (templateData["season"] as! String? == season) {
+                        // Add maxSupply to the total
+                        seasonMaxSupply = seasonMaxSupply + template.maxSupply
+
+                        // Add maxSupply to earlier supply if the template came before this one
+                        if (i < token.templateID) {
+                            earlierSeasonSupply = earlierSeasonSupply + template.maxSupply
+                        }
+                    }
+                }
+
+                editions.append(
+                    // Football Season Edition
+                    MetadataViews.Edition(
+                        name: season,
+                        number: earlierSeasonSupply + self.data.mintNumber,
+                        max: seasonMaxSupply
+                    )
+                )
+            }
+
+            return editions
+        }
+
+        pub fun getRoyalties(): MetadataViews.Royalties {
+            let token = XGStudio.getNFTDataById(nftId: self.id)
+            let template =  XGStudio.getTemplateById(templateId: token.templateID)
+            let templateData = template.getImmutableData()
+
+            let genericReceiver = getAccount(0x2ce293d39a72a72b).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
+
+            // Only add receiver if the Profile capability exists
+            let royalties: [MetadataViews.Royalty] = genericReceiver.check() ? [
+                MetadataViews.Royalty(
+                    receiver: genericReceiver,
+                    cut: 0.025,
+                    description: "Artist"
+                )
+            ] : []
+
+            if (template.brandId == 1) {
+                // xGMove
+                let receiver = getAccount(0xc2307c44b0903e33).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
+
+                // Only add receiver if the Profile capability exists
+                if (receiver.check()) {
+                    royalties.append(
+                        MetadataViews.Royalty(
+                            receiver: receiver,
+                            cut: 0.05,
+                            description: "xGMove treasury"
+                        )
+                    )
+                }
+            } else if (template.brandId == 2) {
+                // xGFootball
+                let receiver = getAccount(0xa6fa47e9ad815dcf).getCapability<&{FungibleToken.Receiver}>(Profile.publicReceiverPath)
+
+                // Only add receiver if the Profile capability exists
+                if (receiver.check()) {
+                    royalties.append(
+                        MetadataViews.Royalty(
+                            receiver: receiver,
+                            cut: 0.05,
+                            description: "xGFootball treasury"
+                        )
+                    )
+                }
+            }
+
+            return MetadataViews.Royalties(royalties)
+        }
+
         destroy() {
             emit NFTDestroyed(id: self.id)
         }
@@ -253,7 +589,7 @@ pub contract XGStudio: NonFungibleToken {
     // Collection is a resource that every user who owns NFTs 
     // will store in their account to manage their NFTS
     //
-    pub resource Collection: XGStudioCollectionPublic,NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+    pub resource Collection: XGStudioCollectionPublic,NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
@@ -290,11 +626,19 @@ pub contract XGStudio: NonFungibleToken {
         pub fun borrowXGStudio_NFT(id: UInt64): &XGStudio.NFT? {
             if self.ownedNFTs[id] != nil {
                 let ref = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT?
-                return ref as! &XGStudio.NFT
+                return ref as! &XGStudio.NFT?
             } else {
                 return nil
             }
         }
+
+        pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
+            let nft = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+            let xgNFT = nft as! &XGStudio.NFT
+            return xgNFT
+        }
+
+
         init() {
             self.ownedNFTs <- {}
         }
@@ -532,3 +876,4 @@ pub contract XGStudio: NonFungibleToken {
         emit ContractInitialized()
     }
 }
+ 
