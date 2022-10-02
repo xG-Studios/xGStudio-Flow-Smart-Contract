@@ -636,7 +636,7 @@ describe("MetadataViews", () => {
       thumbnail: "ipfs://IPFSCID/",
       owner: "0xf3fcd2c1a78f5eee",
       type: "A.179b6b1cb6755e31.XGStudio.NFT",
-      royalties: [],
+      royalties: [],  //TODO: setup receivers in target accounts 
       externalURL: "https://xgstudios.io/rewards/2",
       serialNumber: 2,
       collectionPublicPath: {
@@ -730,6 +730,197 @@ describe("MetadataViews", () => {
              ]},
              
       medias: { items: [] },
+      license: null,
+    });
+  });
+  test("NFTView for Legacy Template", async () => {
+    // Import participating accounts
+    const Bob = await getAccountAddress("Bob");
+    const Charlie = await getAccountAddress("Charlie");
+
+    // Set transaction signers
+    const signers = [Bob];
+
+    // Generate addressMap from import statements
+    const MetadataViews = await getContractAddress("MetadataViews");
+    const XGStudio = await getContractAddress("XGStudio");
+    const NonFungibleToken = await getContractAddress("NonFungibleToken");
+    const templateAddressMap = {
+      NonFungibleToken,
+      XGStudio,
+    };
+    let schemaCode = await getTransactionCode({
+      name: "createLegacySchema",
+      addressMap: templateAddressMap,
+    });
+    await shallPass(
+      sendTransaction({
+        code: schemaCode,
+        signers,
+        args: ["Legacy Test Schema"]
+      })
+    );
+    const templateTxName = "createLegacyTemplateStaticData"
+    let code = await getTransactionCode({
+      name: templateTxName,
+      addressMap: templateAddressMap,
+    });
+    // brandId, schemaId, maxSupply,immutableData
+    const args = [1, 2, 100];
+
+    await shallPass(
+      sendTransaction({
+        code,
+        signers,
+        args,
+      })
+    )
+
+    const addressMap = {
+      MetadataViews,
+      XGStudio,
+    };
+
+
+    const [result] = await shallPass(
+      sendTransaction({
+        name: "mintNFT",
+        signers,
+        args: [2, Charlie],
+        addressMap,
+      })
+    );
+
+    const nftID = result.events[0].data.nftId;
+
+    const [nftData] = await shallResolve(
+      executeScript({
+        name: "getNFTView",
+        args: [Charlie, nftID],
+      })
+    );
+
+    expect(nftData).toEqual({
+      name: "Win: Alexandra Park v Hilltop Women",
+      description: "Win: The xG Reward for players who made an appearance a win.\n\nGet xG Rewards for your football achievements.\nBuild your collection - your story.\nUnlock xG experiences.\n\nhttps://linktr.ee/xgstudios",
+      thumbnail: "ipfs://QmSPFN7uaUaW1H9GsET9HHKudMCLvB5JyFDPxyQ4FoGd5k/WIN.png",
+      owner: "0xf3fcd2c1a78f5eee",
+      type: "A.179b6b1cb6755e31.XGStudio.NFT",
+      royalties:[], //TODO: setup receivers in target accounts
+      externalURL: "https://xgstudios.io/rewards/3",
+      serialNumber: 3,
+      collectionPublicPath: {
+        domain: "public",
+        identifier: "XGStudioCollection",
+      },
+      collectionStoragePath: {
+        domain: "storage",
+        identifier: "XGStudioCollection",
+      },
+      collectionProviderPath: {
+        domain: "private",
+        identifier: "XGStudioCollectionProvider",
+      },
+      collectionPublic:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic}",
+      collectionPublicLinkedType:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.Receiver,A.01cf0e2f2f715450.MetadataViews.ResolverCollection}",
+      collectionProviderLinkedType:
+        "&A.179b6b1cb6755e31.XGStudio.Collection{A.179b6b1cb6755e31.XGStudio.XGStudioCollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.CollectionPublic,A.01cf0e2f2f715450.NonFungibleToken.Provider,A.01cf0e2f2f715450.MetadataViews.ResolverCollection}",
+      collectionName: "XGStudio",
+      collectionDescription:
+        "xG® rewards athletes’ real world sports participation with personalised digital collectibles and the xG® utility token.",
+      collectionExternalURL: "https://xgstudios.io",
+      collectionSquareImage:
+        "https://xgstudios.mypinata.cloud/ipfs/QmZP32SFcQ2rN2diEXsnwyFxZ5dmyFhuqAybDRANg2cEsk/XG_MOVE_THUMBNAIL.png",
+      collectionBannerImage:
+        "https://xgstudios.mypinata.cloud/ipfs/QmZP32SFcQ2rN2diEXsnwyFxZ5dmyFhuqAybDRANg2cEsk/XG_MOVE_COLLECTION_BANNER.png",
+      collectionSocials: {
+        discord: "https://discord.com/invite/uaYhFARqXM",
+        instagram: "https://www.instagram.com/xGStudios_/",
+        twitter: "https://twitter.com/xGStudios_",
+        tiktok: "https://www.tiktok.com/@xgstudios"
+      },
+      editions: [
+        { name: "Win: Alexandra Park v Hilltop Women", number: 1, max: 100 },
+        { name: "2022/23", number: 1, max: 100 },
+      ],
+      traits: { "traits":  [
+               {
+                 "displayType": null,
+                 "name": "oppositionTeam",
+                 "rarity": null,
+                 "value": "Alexandra Park",
+               },
+               {
+                 "displayType": null,
+                 "name": "playerTeam",
+                 "rarity": null,
+                 "value": "Hilltop Women",
+               },
+               {
+                 "displayType": null,
+                 "name": "season",
+                 "rarity": null,
+                 "value": "2022/23",
+               },
+               {
+                 "displayType": null,
+                 "name": "fixtureType",
+                 "rarity": null,
+                 "value": "Division 2 North",
+               },
+               {
+                 "displayType": null,
+                 "name": "result",
+                 "rarity": null,
+                 "value": "W",
+               },
+               {
+                 "displayType": null,
+                 "name": "date",
+                 "rarity": null,
+                 "value": "04/09/2022",
+               },
+               {
+                 "displayType": null,
+                 "name": "competition",
+                 "rarity": null,
+                 "value": "Greater London Women''s Football League",
+               },
+               {
+                 "displayType": null,
+                 "name": "activityType",
+                 "rarity": null,
+                 "value": "Football",
+               },
+               {
+                 "displayType": null,
+                 "name": "venue",
+                 "rarity": null,
+                 "value": "A",
+               },
+               {
+                 "displayType": null,
+                 "name": "score",
+                 "rarity": null,
+                 "value": "0 - 16",
+               },
+               {
+                 "displayType": null,
+                 "name": "xGRewardType",
+                 "rarity": null,
+                 "value": "Win",
+               },
+             ]},
+      medias: { items: [
+                {
+                  "file":  {
+                     "url": "https://xgstudios.io",
+                   },
+                   "mediaType": "Image",
+                 },
+              ]},
       license: null,
     });
   });
