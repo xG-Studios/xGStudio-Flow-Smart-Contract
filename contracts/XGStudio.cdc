@@ -322,8 +322,9 @@ pub contract XGStudio: NonFungibleToken {
                         )
                     ])
                 case Type<MetadataViews.Traits>():                   
-                    if (if templateData["traits"] != nil) {
-                        return MetadataViews.dictToTraits(dict: templateData["traits"])
+                    if (templateData["traits"] != nil) {
+                        let dummyExcludes: [String] = [];
+                        return MetadataViews.dictToTraits(dict: templateData["traits"] as! {String: AnyStruct}, excludedNames: dummyExcludes)
                     }
                     let excludedTraits = [
                         "nftType", "xGRewardType",
@@ -332,11 +333,11 @@ pub contract XGStudio: NonFungibleToken {
                         "title",
                         "description",
                         "thumbnail",
-                        "royalties",
+                        "royalties"
                     ]
                     let traitsView = MetadataViews.dictToTraits(dict: templateData, excludedNames: excludedTraits)
 
-                    let rewardTypeValue: String;
+                    var rewardTypeValue: String = "";
                     if (templateData["xGRewardType"] != nil) {
                         rewardTypeValue = templateData["xGRewardType"] as! String? ?? ""
                     } else {

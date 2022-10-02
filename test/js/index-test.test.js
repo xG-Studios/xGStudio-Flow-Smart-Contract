@@ -13,7 +13,9 @@ import {
 } from "flow-js-testing";
 import path from "path";
 
-jest.setTimeout(10000);
+//jest.setTimeout(10000);
+jest.setTimeout(100000);
+
 
 beforeAll(async () => {
   const basePath = path.resolve(__dirname, "../..");
@@ -122,6 +124,7 @@ describe("Deployment", () => {
     );
   });
 });
+
 describe("Transactions", () => {
   test("test transaction  create brand", async () => {
     const name = "createBrand";
@@ -279,6 +282,7 @@ describe("Transactions", () => {
     );
   });
 });
+
 describe("Scripts", () => {
   test("get total supply", async () => {
     const name = "getTotalSupply";
@@ -668,7 +672,63 @@ describe("MetadataViews", () => {
         tiktok: "https://www.tiktok.com/@xgstudios"
       },
       editions: [{ name: "Second NFT", number: 2, max: 100 }],
-      traits: null,
+      traits: { "traits" : [
+                {
+                 "displayType": null,
+                 "name": "raceName",
+                 "rarity": null,
+                 "value": "Lion",
+               },
+                {
+                 "displayType": null,
+                 "name": "raceDescription",
+                 "rarity": null,
+                 "value": "Lion race",
+               },
+                {
+                 "displayType": null,
+                 "name": "distance",
+                 "rarity": null,
+                 "value": "2000.00000000",
+               },
+                {
+                 "displayType": null,
+                 "name": "gender",
+                 "rarity": null,
+                 "value": "Male",
+               },
+                {
+                 "displayType": null,
+                 "name": "contectUrl",
+                 "rarity": null,
+                 "value": "https://xgstudios.io",
+               },
+                {
+                 "displayType": null,
+                 "name": "raceLocation",
+                 "rarity": null,
+                 "value": "Mian Essa",
+               },
+                {
+                 "displayType": null,
+                 "name": "activityType",
+                 "rarity": null,
+                 "value": "Running",
+               },
+                {
+                 "displayType": null,
+                 "name": "raceDate",
+                 "rarity": null,
+                 "value": "1649994582.00000000",
+               },
+                {
+                 "displayType": null,
+                 "name": "xGRewardType",
+                 "rarity": null,
+                 "value": "AR",
+               },
+             ]},
+             
       medias: { items: [] },
       license: null,
     });
