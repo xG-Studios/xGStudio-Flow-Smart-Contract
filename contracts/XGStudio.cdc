@@ -321,9 +321,10 @@ pub contract XGStudio: NonFungibleToken {
                             contentType == "mp4" ? "video/mp4" : contentType
                         )
                     ])
-                case Type<MetadataViews.Traits>():                   
+                case Type<MetadataViews.Traits>():      
+                    let dummyExcludes: [String] = [];
+            
                     if (templateData["traits"] != nil) {
-                        let dummyExcludes: [String] = [];
                         return MetadataViews.dictToTraits(dict: templateData["traits"] as! {String: AnyStruct}, excludedNames: dummyExcludes)
                     }
                     let excludedTraits = [
@@ -345,7 +346,12 @@ pub contract XGStudio: NonFungibleToken {
                     }
                     let rewardTypeTrait = MetadataViews.Trait(name: "xGRewardType", value: rewardTypeValue, displayType: nil, rarity: nil)
                     traitsView.addTrait(rewardTypeTrait)
-                    
+
+                    //NFT specific traits
+                    let NFTTraits = MetadataViews.dictToTraits(dict: self.data.getImmutableData(), excludedNames: dummyExcludes)
+                    for trait in NFTTraits.traits {
+                        traitsView.addTrait(trait)
+                    }
                     return traitsView
             }
 

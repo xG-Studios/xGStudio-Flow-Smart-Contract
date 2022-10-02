@@ -726,7 +726,12 @@ describe("MetadataViews", () => {
                  "name": "xGRewardType",
                  "rarity": null,
                  "value": "AR",
-               },
+               },{
+                "displayType": null,
+                "name": "name",
+                "rarity": null,
+                "value": "Nasir",
+              },
              ]},
              
       medias: { items: [] },
@@ -911,7 +916,12 @@ describe("MetadataViews", () => {
                  "name": "xGRewardType",
                  "rarity": null,
                  "value": "Win",
-               },
+               },{
+                  "displayType": null,
+                  "name": "name",
+                  "rarity": null,
+                  "value": "Nasir",
+                },
              ]},
       medias: { items: [
                 {
