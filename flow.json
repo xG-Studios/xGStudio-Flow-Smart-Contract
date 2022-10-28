@@ -45,19 +45,22 @@
     "Profile": {
       "source": "./contracts/Profile.cdc",
       "aliases": {
-        "mainnet": "097bafa4e0b48eef"
+        "mainnet": "097bafa4e0b48eef",
+        "testnet": "35717efbbce11c74"
       }
     },
     "ProfileCache": {
       "source": "./contracts/ProfileCache.cdc",
       "aliases": {
-        "mainnet": "097bafa4e0b48eef"
+        "mainnet": "097bafa4e0b48eef",
+        "testnet": "35717efbbce11c74"
       }
     },
     "Clock": {
       "source": "./contracts/Clock.cdc",
       "aliases": {
-        "mainnet": "097bafa4e0b48eef"
+        "mainnet": "097bafa4e0b48eef",
+        "testnet": "35717efbbce11c74"
       }
     }
   },

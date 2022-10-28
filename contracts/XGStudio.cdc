@@ -55,6 +55,8 @@ pub contract XGStudio: NonFungibleToken {
         pub case Address
         pub case Array
         pub case Any
+        pub case Royalties
+
     }
 
     // A structure that contain all the data related to a Brand
