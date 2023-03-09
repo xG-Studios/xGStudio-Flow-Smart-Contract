@@ -12,7 +12,8 @@ transaction(brandId:UInt64, schemaId:UInt64, maxSupply:UInt64) {
         
         let immutableData : {String: AnyStruct} = {
             "contentType" : "Image",
-            "contentUrl"  : "https://xgstudios.io",
+            "contectUrl"  : "https://xgstudios.io",
+            "title"       : "Second NFT",
             "title"       : "Win: Alexandra Park v Hilltop Women",
             "xGRewardType": "Win",
             "competition":"Greater London Women''s Football League",

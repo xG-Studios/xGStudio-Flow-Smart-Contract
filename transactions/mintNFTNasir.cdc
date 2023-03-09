@@ -9,6 +9,7 @@ transaction(templateId: UInt64, account:Address){
         .borrow() ?? 
         panic("could not borrow a reference to the NFTMethodsCapability interface")
         let immutableData : {String: AnyStruct} = {
+            "name" : "Nasir"  
         }
         actorResource.mintNFT(templateId: templateId, account: account, immutableData:immutableData) 
     }

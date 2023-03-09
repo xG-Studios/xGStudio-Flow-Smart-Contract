@@ -11,3 +11,4 @@ transaction {
         acct.link<&{XGStudio.XGStudioCollectionPublic}>(XGStudio.CollectionPublicPath, target:XGStudio.CollectionStoragePath)        
     }
 }
+ 
